@@ -3,7 +3,7 @@
 %      usage: endoexoRvL(v, roiName, varargin)
 %         by: eli & laura
 %       date: 06/17/14
-%    purpose: 
+%    purpose: Analysis of fMRI endo vs. exo experiment
 %
 function v = endoexoRvL(v, roiName, varargin)
 
