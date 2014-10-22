@@ -3,7 +3,7 @@
 %      usage: endoexoRvL(v, roiName, varargin)
 %         by: eli & laura
 %       date: 06/17/14
-%    purpose: Analysis of fMRI endo vs. exo experiment
+%    purpose: 
 %
 function v = endoexoRvL(v, roiName, varargin)
 
@@ -15,15 +15,16 @@ end
 
 % get the input arguemnts
 getArgs(varargin, [], 'verbose=0');
-if ieNotDefined('scanNum'); scanNum = 1;end
+if ieNotDefined('scanNum'); scanNum = 2;end
 if ieNotDefined('groupNum'); groupNum = 'Concatenation';end
 if ieNotDefined('locThresh'); locThresh = 0.4; end
 if ieNotDefined('locGroup'); locGroup = 'Averages'; end
 if ieNotDefined('locScan'); locScan = 1; end
 
 v = viewSet(v, 'curGroup', groupNum);
+v = viewSet(v, 'curScan', scanNum);
 groupName = viewGet(v, 'groupName');
-
+frameperiod = viewGet(v, 'frameperiod');
 
 %% Load the fMRI time series within the ROI
 rois = loadROITSeries(v, roiName, scanNum, groupNum, 'keepNAN',true);
@@ -41,31 +42,31 @@ end
 % and average across voxels, based on localizer response
 tSeries = nanmean(tSeries(goodVox,:));
 
-keyboard
-% load analyses if needed
-if viewGet(v, 'nanalyses')==0
-  disp(sprintf('Loading both analyses'))
-  v = loadAnalysis(v, 'erAnal/erAnal_exo.mat');
-  v = loadAnalysis(v, 'glmAnalStats/GLM_exo.mat');
-end
-if viewGet(v, 'nanalyses')==1
-  disp(sprintf('Only %s is loaded, please load both analyses', viewGet(v, 'analysistype',1)))
-  return;
-end
-if viewGet(v, 'nanalyses')==2
-  disp(sprintf('Both %s and %s are loaded', viewGet(v, 'analysistype',1), viewGet(v, 'analysistype',2)))
-end
-  
+% get the stimvol
+[stimvol stimNames var] = getStimvol(v, ...
+    {{'CueCond=[1 2 3 4]','PrePost=1','targLoc=1'},...
+    {'CueCond=[5 6 7 8]','PrePost=1','targLoc=1'}, ...
+    {'CueCond=[1 2 3 4]','PrePost=2','targLoc=1'}, ...
+    {'CueCond=[5 6 7 8]','PrePost=2','targLoc=1'}, ...
+    {'CueCond=[1 2 3 4]','PrePost=1','targLoc=2'}, ...
+    {'CueCond=[5 6 7 8]','PrePost=1','targLoc=2'}, ...
+    {'CueCond=[1 2 3 4]','PrePost=2','targLoc=2'}, ...
+    {'CueCond=[5 6 7 8]','PrePost=2','targLoc=2'}, ...
+    {'CueCond=9','cueLoc=1'}, ...
+    {'CueCond=9','cueLoc=2'}, ...
+    {'CueCond=10'}});
 
-%% Run the event related analysis
-% get the 'd' structure, loading analysis of needed
-% ATTN do some error checking that the first analysis is erAnal
-dDec = viewGet(v, 'd', scanNum, 1);
+
+
+%{{'CueCond=[1 2 3 4]','PrePost=1','targLoc=1'}, {'CueCond=[5 6 7 8]','PrePost=1','targLoc=1'}, {'CueCond=[1 2 3 4]','PrePost=2','targLoc=1'},{'CueCond=[5 6 7 8]','PrePost=2','targLoc=1'},{'CueCond=[1 2 3 4]','PrePost=1','targLoc=2'},    {'CueCond=[5 6 7 8]','PrePost=1','targLoc=2'},    {'CueCond=[1 2 3 4]','PrePost=2','targLoc=2'},    {'CueCond=[5 6 7 8]','PrePost=2','targLoc=2'},    {'CueCond=9','cueLoc=1'},{'CueCond=9','cueLoc=2'}, {'CueCond=10'}}
+
+% make stimulus convolution analysis
+scm = makescm(v, round(24/frameperiod), 1, stimvol);
 
 % compute the betas
-nhdr = size(dDec.ehdr,4);
-hdrlen = size(dDec.ehdr, 5);
-dDec = getr2timecourse(tSeries, nhdr, hdrlen, dDec.scm, dDec.tr); 
+nhdr = length(stimNames);
+hdrlen = round(24/frameperiod);
+dDec = getr2timecourse(tSeries, nhdr, hdrlen, scm, frameperiod); 
 
 myColors{1}=[10 55 191]/255;
 myColors{2}=[191 0 0]/255;
@@ -104,23 +105,35 @@ h_legend = mylegend({'Pre Valid', 'Pre Invalid', 'Post Valid', 'Post Invalid'}, 
 set(h_legend, 'box', 'off')
 
 %% Betas from GLM analysis
-% get the 'd' structure, loading analysis of needed
-% ATTN do some error checking to make sure that the second analysis is GLM anal
-dGLM = viewGet(v, 'd', scanNum, 2);
+
+keyboard
+%create model HRF
+[params, d.hrf] = hrfDoubleGamma([], frameperiod, [], 'defaultParams=1');
+d.tr = frameperiod;
+d.dim = [1 1 1 length(tSeries)];
+d.stimvol = stimvol;
+d.concatInfo = viewGet(v, 'concatInfo');
+d.designSupersampling = 1;
+for iRun=1:length(stimvol)
+    d.stimDurations{iRun} = ones(size(stimvol{iRun}));
+end
+verbose = 1;
+d = makeDesignMatrix(d,[],verbose, scanNum);
+% compute estimates and statistics
+%[d, out] = getGlmStatistics(d, params, verbose, precision, actualData);%, computeTtests,computeBootstrap);
 
 % compute the betas
-nhdr = size(dGLM.ehdr,4);
-hdrlen = size(dGLM.ehdr, 5);
-dGLM = getr2timecourse(tSeries, nhdr, hdrlen, dGLM.scm, dGLM.tr); 
+hdrlen = 1;
+dGLM = getr2timecourse(tSeries, nhdr, hdrlen, d.scm, d.tr); 
 yMax = ceil(10*(max(dGLM.ehdr(:)+max(dGLM.ehdrste(:)))))/10;
 yMin = min(0, floor(10*(min(dGLM.ehdr(:)-max(dGLM.ehdrste(:)))))/10);
 
 subplot(1,3,3); 
 cla
 for iBar=1:4
-    bar([iBar iBar+6],      dGLM.ehdr([iBar iBar+3],1), 0.1, 'facecolor', myColors{iBar});
+    bar([iBar iBar+6],      dGLM.ehdr([iBar iBar+4],1), 0.1, 'facecolor', myColors{iBar});
     hold on
-    errorbar([iBar iBar+6], dGLM.ehdr([iBar iBar+3],1), dGLM.ehdrste([iBar iBar+3],1), 'o', 'color', myColors{iBar});
+    errorbar([iBar iBar+6], dGLM.ehdr([iBar iBar+4],1), dGLM.ehdrste([iBar iBar+4],1), 'o', 'color', myColors{iBar});
 end
 xaxis([0 11]);
 axis square;
