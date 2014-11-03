@@ -85,7 +85,7 @@ myColors{3}=[207 219 255]/255;
 myColors{4}=[255 204 204]/255;
 
 %% Plot the MRI response over time
-keyboard
+
 % create a new figure
 smartfig('tSeriesPlot', 'reuse'); clf;
 % title  for the figure based on the ROI
