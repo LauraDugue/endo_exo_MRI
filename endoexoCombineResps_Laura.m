@@ -5,17 +5,17 @@
 %       date: 06/25/14
 %    purpose: combine estimates from 
 %
-function retval = endoexoCombineResps(anal1, anal2, varargin)
+function retval = endoexoCombineResps_Laura(anal1, anal2, attCond, obs, varargin)
 
 % check arguments
-if ~any(nargin == [2])
+if ~any(nargin == [4])
   help endoexoCombineResps
   return
 end
 
 % get the input arguemnts
 getArgs(varargin, [], 'verbose=0');
-if ieNotDefined('analdir'); analdir = 'anal.bak';end
+if ieNotDefined('analdir'); analdir = ['Anal/' attCond];end
 
 aL = load(fullfile(analdir,anal1));
 
@@ -106,11 +106,55 @@ yMin = floor(10*(min([glmehdrC; glmehdrI]-min([glmehdrsteC; glmehdrsteI]))))/10;
 yMin = min(0, yMin);
 
 subplot(1,2,2); cla
-mybar(glmehdrC', 'yError', glmehdrsteC', 'dispValues', 0, 'groupLabels', {' '},'yLabelText', 'fMRI response (% change image intensity)','yAxisMin', yMin, 'yAxisMax',yMax, 'withinGroupColors',myColors);
+mybar(glmehdrC', 'yError', glmehdrsteC', 'dispValues', 0, 'groupLabels', {' '},'yLabelText',...
+    'fMRI response (% change image intensity)','yAxisMin', yMin, 'yAxisMax',yMax, 'withinGroupColors',myColors);
 
 axis square;
 drawPublishAxis('yTick', [yMin yMax]);
 
-namefig=sprintf(['/Users/dugue/Documents/Post_doc/MRI_project/wiki/pilot_ec_mri/combinedLeftRight/' anal1 '_' anal2 '_bak']);
+namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/' anal1 '_' anal2]);
+print ('-djpeg', '-r500',namefig);
+
+%% Cue only and Blank trials analysis
+
+% create a new figure
+h = smartfig('tSeriesPlot', 'reuse'); clf;
+% title  for the figure based on the ROI
+titlestr = fixBadChars(anal1, {'anal_l_',''});
+titlestr = fixBadChars(titlestr, {'_restricted.mat', ''});
+titlestr = fixBadChars(titlestr, {['_' attCond '.mat'], attCond});
+suptitle(sprintf('Cue only and Blank trials (ROI: %s)', titlestr));
+
+% plot the responses for target in the LVF
+subplot(1,2,1); cla
+yMax = ceil(10*(max(aL.dDec.ehdr(:)+max(aL.dDec.ehdrste(:)))))/10;
+yMin = floor(10*(min(aL.dDec.ehdr(:)-max(aL.dDec.ehdrste(:)))))/10;
+myerrorbar(aL.dDec.time, aL.dDec.ehdr(9,:), 'yError', aL.dDec.ehdrste(9,:), 'MarkerFaceColor', myColors{3});
+hold on
+myerrorbar(aL.dDec.time, aL.dDec.ehdr(10,:), 'yError', aL.dDec.ehdrste(10,:), 'MarkerFaceColor', myColors{1});
+myerrorbar(aL.dDec.time, aL.dDec.ehdr(11,:), 'yError', aL.dDec.ehdrste(11,:), 'MarkerFaceColor', [0 0 0]);
+
+ylabel('fMRI resp (% chg img intensity)');
+xlabel('Time (seconds)');
+axis square
+ylim([yMin yMax]);
+drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25],'titleStr', 'Left ROI');
+
+% plot the respones for target in the RVF
+subplot(1,2,2); cla
+yMax = ceil(10*(max(aR.dDec.ehdr(:)+max(aR.dDec.ehdrste(:)))))/10;
+yMin = floor(10*(min(aR.dDec.ehdr(:)-max(aR.dDec.ehdrste(:)))))/10;
+myerrorbar(aR.dDec.time, aR.dDec.ehdr(9,:), 'yError', aR.dDec.ehdrste(9,:), 'MarkerFaceColor', myColors{1});
+hold on
+myerrorbar(aR.dDec.time, aR.dDec.ehdr(10,:), 'yError', aR.dDec.ehdrste(10,:), 'MarkerFaceColor', myColors{3});
+myerrorbar(aR.dDec.time, aR.dDec.ehdr(11,:), 'yError', aR.dDec.ehdrste(11,:), 'MarkerFaceColor', [0 0 0]);
+
+ylabel('fMRI resp (% chg img intensity)');
+xlabel('Time (seconds)');
+axis square
+ylim([yMin yMax]);
+drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25],'titleStr', 'Right ROI');
+
+namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/CueOnly_Blank_' anal1 '_' anal2]);
 print ('-djpeg', '-r500',namefig);
 
