@@ -1,10 +1,4 @@
-% endoexoRvL.m
-%
-%      usage: endoexoRvL(v, roiName, varargin)
-%         by: eli & laura
-%       date: 06/17/14
-%    purpose: 
-%
+% endoexoRvL_Corbetta.m
 function v = endoexoRvL_Corbetta(v, roiName, attCond, varargin)
 
 % check arguments
@@ -44,40 +38,32 @@ tSeries = nanmean(tSeries(goodVox,:));
 
 % get the stimvol
 if strcmp(attCond,'exo')
-    if exist('Anal/exostimvol.mat', 'file')
-        load('Anal/exostimvol.mat');
+    if exist('Anal/exostimvol_Corb.mat', 'file')
+        load('Anal/exostimvol_Corb.mat');
     else
         [stimvol, stimNames, var] = getStimvol(v, ...
-            {{'CueCond=[1 2 3 4]','PrePost=1','targLoc=1'},...
-            {'CueCond=[5 6 7 8]','PrePost=1','targLoc=1'}, ...
-            {'CueCond=[1 2 3 4]','PrePost=2','targLoc=1'}, ...
-            {'CueCond=[5 6 7 8]','PrePost=2','targLoc=1'}, ...
-            {'CueCond=[1 2 3 4]','PrePost=1','targLoc=2'}, ...
-            {'CueCond=[5 6 7 8]','PrePost=1','targLoc=2'}, ...
-            {'CueCond=[1 2 3 4]','PrePost=2','targLoc=2'}, ...
-            {'CueCond=[5 6 7 8]','PrePost=2','targLoc=2'}, ...
+            {{'CueCond=10'},...
             {'CueCond=9','cueLoc=1'}, ...
             {'CueCond=9','cueLoc=2'}, ...
-            {'CueCond=10'}});
-        save Anal/exostimvol.mat stimvol stimNames var
+            {'CueCond=[1 2 3 4]','cueLoc=1'},...
+            {'CueCond=[1 2 3 4]','cueLoc=2'},...
+            {'CueCond=[5 6 7 8]','cueLoc=1'},...
+            {'CueCond=[5 6 7 8]','cueLoc=2'}});
+        save Anal/exostimvol_Corb.mat stimvol stimNames var
     end
 elseif strcmp(attCond,'endo')
-    if exist('Anal/endostimvol.mat', 'file')
-        load('Anal/endostimvol.mat');
+    if exist('Anal/endostimvol_Corb.mat', 'file')
+        load('Anal/endostimvol_Corb.mat');
     else
         [stimvol, stimNames, var] = getStimvol(v, ...
-            {{'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=1'},...
-            {'CueCond=[7 8]','PrePost=1','targLoc=1'}, ...
-            {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=1'}, ...
-            {'CueCond=[7 8]','PrePost=2','targLoc=1'}, ...
-            {'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=2'}, ...
-            {'CueCond=[7 8]','PrePost=1','targLoc=2'}, ...
-            {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=2'}, ...
-            {'CueCond=[7 8]','PrePost=2','targLoc=2'}, ...
+            {{'CueCond=10'},...
             {'CueCond=9','cueLoc=1'}, ...
             {'CueCond=9','cueLoc=2'}, ...
-            {'CueCond=10'}});
-        save Anal/endostimvol.mat stimvol stimNames var
+            {'CueCond=[1 2 3 4 5 6]','cueLoc=1'},...
+            {'CueCond=[1 2 3 4 5 6]','cueLoc=2'},...
+            {'CueCond=[7 8]','cueLoc=1'},...
+            {'CueCond=[7 8]','cueLoc=2'}});
+        save Anal/endostimvol_Corb.mat stimvol stimNames var
     end
 end
 
@@ -89,41 +75,45 @@ nhdr = length(stimNames);
 hdrlen = round(24/frameperiod);
 dDec = getr2timecourse(tSeries, nhdr, hdrlen, scm, frameperiod); 
 
-myColors{1}=[10 55 191]/255;
-myColors{2}=[191 0 0]/255;
-myColors{3}=[207 219 255]/255;
-myColors{4}=[255 204 204]/255;
+myColors{1}=[0 0 0];
+myColors{2}=[0.5 0.5 0.5];
+myColors{3}=[10 55 191]/255;
+myColors{4}=[191 0 0]/255;
 
 %% Plot the MRI response over time
 
 % create a new figure
 smartfig('tSeriesPlot', 'reuse'); clf;
 % title  for the figure based on the ROI
-suptitle(sprintf('ROI: %s', fixBadChars(roiName, {'_',' '})));
+suptitle(sprintf([attCond ': %s'], fixBadChars(roiName, {'_',' '})));
 
 % plot the responses for target in the LVF
 subplot(1,3,1); cla
 yMax = ceil(10*(max(dDec.ehdr(:)+max(dDec.ehdrste(:)))))/10;
 yMin = floor(10*(min(dDec.ehdr(:)-max(dDec.ehdrste(:)))))/10;
-for i=1:4
-  myerrorbar(dDec.time, dDec.ehdr(i,:), 'yError', dDec.ehdrste(i,:), 'MarkerFaceColor', myColors{i});
+count=0;
+for i=[1 2 4 6]
+    count = count + 1;
+    myerrorbar(dDec.time, dDec.ehdr(i,:), 'yError', dDec.ehdrste(i,:), 'MarkerFaceColor', myColors{count});
 end
 ylabel('fMRI resp (% chg img intensity)');
 xlabel('Time (seconds)');
 axis square
 ylim([yMin yMax]);
-drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25],'titleStr', 'Target in LVF');
+drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25],'titleStr', 'Cue in LVF');
 
 % plot the respones for target in the RVF
 subplot(1,3,2); cla
-for i=5:8
-  myerrorbar(dDec.time, dDec.ehdr(i,:), 'yError', dDec.ehdrste(i,:), 'MarkerFaceColor', myColors{i-4});
+count=0;
+for i=[1 3 5 7]
+    count = count + 1;
+    myerrorbar(dDec.time, dDec.ehdr(i,:), 'yError', dDec.ehdrste(i,:), 'MarkerFaceColor', myColors{count});
 end
 axis square
 ylim([yMin yMax]);
 xlabel('Time (seconds)');
 
-drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RVF');
+drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Cue in RVF');
 %h_legend = mylegend({'Pre Valid', 'Pre Invalid', 'Post Valid', 'Post Invalid'}, myColors);
 %set(h_legend, 'box', 'off')
 
@@ -152,14 +142,27 @@ yMin = min(0, floor(10*(min(dGLM.ehdr(:)-max(dGLM.ehdrste(:)))))/10);
 
 subplot(1,3,3); 
 cla
-for iBar=1:4
-    bar([iBar iBar+6],      dGLM.ehdr([iBar iBar+4],1), 0.1, 'facecolor', myColors{iBar});
+bar(1, dGLM.ehdr(1,1), 0.5, 'facecolor', myColors{1});
+hold on
+errorbar(1, dGLM.ehdr(1,1), dGLM.ehdrste(1,1), 'o', 'color', myColors{1});
+
+count = 0;
+for iBar = [2 4 6]
+    count = count + 1;
+    bar(count+2, dGLM.ehdr(iBar,1), 0.5, 'facecolor', myColors{count+1});
     hold on
-    errorbar([iBar iBar+6], dGLM.ehdr([iBar iBar+4],1), dGLM.ehdrste([iBar iBar+4],1), 'o', 'color', myColors{iBar});
+    errorbar(count+2, dGLM.ehdr(iBar,1), dGLM.ehdrste(iBar,1), 'o', 'color', myColors{count+1});
+end
+count = 0;
+for iBar = [3 5 7]
+    count = count + 1;
+    bar(count+7, dGLM.ehdr(iBar,1), 0.5, 'facecolor', myColors{count+1});
+    hold on
+    errorbar(count+7, dGLM.ehdr(iBar,1), dGLM.ehdrste(iBar,1), 'o', 'color', myColors{count+1});
 end
 xaxis([0 11]);
 axis square;
-drawPublishAxis('yTick', [0 yMax/2 yMax]);
+drawPublishAxis('yTick', [0 yMax/2 yMax], 'xTick', [1 4 9], 'xTickLabel', {'Blank' 'Left' 'Right'});
 
 % mybar(reshape(dGLM.ehdr(1:8,1),4,2)', 'yError', reshape(dGLM.ehdrste(1:8,1),4,2)', 'dispValues', 0, 'groupLabels', {'Target in LVF', 'Target in RVF'},...
 % 'yLabelText', 'fMRI response (% change image intensity)','yAxisMin', yMin, 'yAxisMax',yMax, 'withinGroupColors',myColors)
