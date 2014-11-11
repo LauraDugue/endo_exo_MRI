@@ -173,10 +173,10 @@ drawPublishAxis('yTick', [0 yMax/2 yMax], 'xTick', [1 4 9], 'xTickLabel', {'Blan
 %save the PDF of the time courses
 %print_pdf(fullfile('Figures', sprintf('%s.pdf', stripext(roiName))));
 
-print('-djpeg','-r500',[roiName '_' attCond]);
+% print('-djpeg','-r500',[roiName '_' attCond]);
 
 if ~exist('Anal', 'dir')
   mkdir('Anal');
 end
-eval(sprintf(['save Anal/' attCond '/anal_%s_' attCond '.mat dGLM dDec rois'], stripext(roiName)))
+eval(sprintf(['save Anal/' attCond '/Corbetta/anal_%s_' attCond '_Corb.mat dGLM dDec rois'], stripext(roiName)))
 

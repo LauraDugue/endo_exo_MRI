@@ -102,7 +102,7 @@ smartfig('tSeriesPlot', 'reuse'); clf;
 suptitle(sprintf('ROI: %s', fixBadChars(roiName, {'_',' '})));
 
 % plot the responses for target in the LVF
-subplot(2,2,1); cla
+subplot(1,3,1); cla
 yMax = ceil(10*(max(dDec.ehdr(:)+max(dDec.ehdrste(:)))))/10;
 yMin = floor(10*(min(dDec.ehdr(:)-max(dDec.ehdrste(:)))))/10;
 for i=1:4
@@ -115,7 +115,7 @@ ylim([yMin yMax]);
 drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25],'titleStr', 'Target in LVF');
 
 % plot the respones for target in the RVF
-subplot(2,2,2); cla
+subplot(1,3,2); cla
 for i=5:8
   myerrorbar(dDec.time, dDec.ehdr(i,:), 'yError', dDec.ehdrste(i,:), 'MarkerFaceColor', myColors{i-4});
 end
@@ -128,7 +128,7 @@ drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RV
 %set(h_legend, 'box', 'off')
 
 %% Betas from GLM analysis
-keyboard
+
 %create model HRF
 [params, d.hrf] = hrfDoubleGamma([], frameperiod, [], 'defaultParams=1');
 d.tr = frameperiod;
@@ -140,6 +140,7 @@ for iRun=1:length(stimvol)
     d.stimDurations{iRun} = ones(size(stimvol{iRun}));
 end
 verbose = 1;
+
 d = makeDesignMatrix(d,[],verbose, scanNum);
 % compute estimates and statistics
 %[d, out] = getGlmStatistics(d, params, verbose, precision, actualData);%, computeTtests,computeBootstrap);
@@ -150,33 +151,104 @@ dGLM = getr2timecourse(tSeries, nhdr, hdrlen, d.scm, d.tr);
 yMax = ceil(10*(max(dGLM.ehdr(:)+max(dGLM.ehdrste(:)))))/10;
 yMin = min(0, floor(10*(min(dGLM.ehdr(:)-max(dGLM.ehdrste(:)))))/10);
 
-subplot(2,2,3); 
+subplot(1,3,3); 
 cla
 for iBar=1:4
     bar([iBar iBar+6],      dGLM.ehdr([iBar iBar+4],1), 0.1, 'facecolor', myColors{iBar});
     hold on
-    errorbar([iBar iBar+6], dGLM.ehdr([iBar iBar+4],1), dGLM.ehdrste([iBar iBar+4],1), 'o', 'color', myColors{iBar});
+    errorbar([iBar iBar+6], dGLM.ehdr([iBar iBar+4],1), dGLM.ehdrste([iBar iBar+4], 1), 'o', 'color', myColors{iBar});
 end
 xaxis([0 11]);
 axis square;
 drawPublishAxis('yTick', [0 yMax/2 yMax]);
 
-subplot(2,2,4);
+print('-djpeg','-r500',[roiName '_' attCond]);
+
+%% Remove the motor response (from the blank trials)
+
+dd.tr = frameperiod;
+dd.designSupersampling = 1;
+dd.dim = [1 1 1 length(tSeries)];
+dd.concatInfo = viewGet(v, 'concatInfo');
+newstimvol = [];
+for iCond=1:length(d.stimvol)
+    newstimvol = cat(2, newstimvol, d.stimvol{iCond});
+end
+for iRun=1:dd.concatInfo.n
+    dd.concatInfo.hipassfilter{iRun} = [];
+end
+newstimvol = sort(newstimvol);
+dd.stimvol{1} = newstimvol;
+dd.hrf = dDec.ehdr(11,:)';
+dd.hdrlen = 14;
+dd.stimDurations{1} = ones(size(dd.stimvol{1}));
+dd = makeDesignMatrix(dd,[],verbose, scanNum);
+
+temp = 100*(tSeries-1);
+residual = temp - (dd.scm)';
+nhdr = length(stimNames);
+hdrlen = round(24/frameperiod);
+dDec2 = getr2timecourse(residual, nhdr, hdrlen, scm, frameperiod); 
+
+%% Plot the MRI response over time
+
+% create a new figure
+smartfig('tSeriesPlot', 'reuse'); clf;
+% title  for the figure based on the ROI
+suptitle(sprintf('ROI: %s', fixBadChars(roiName, {'_',' '})));
+
+% plot the responses for target in the LVF
+subplot(1,3,1); cla
+yMax = ceil(10*(max(dDec2.ehdr(:)+max(dDec2.ehdrste(:)))))/10;
+yMin = floor(10*(min(dDec2.ehdr(:)-max(dDec2.ehdrste(:)))))/10;
+for i=1:4
+  myerrorbar(dDec2.time, dDec2.ehdr(i,:), 'yError', dDec2.ehdrste(i,:), 'MarkerFaceColor', myColors{i});
+end
+ylabel('fMRI resp (% chg img intensity)');
+xlabel('Time (seconds)');
+axis square
+ylim([yMin yMax]);
+drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25],'titleStr', 'Target in LVF');
+
+% plot the respones for target in the RVF
+subplot(1,3,2); cla
+for i=5:8
+  myerrorbar(dDec2.time, dDec2.ehdr(i,:), 'yError', dDec2.ehdrste(i,:), 'MarkerFaceColor', myColors{i-4});
+end
+axis square
+ylim([yMin yMax]);
+xlabel('Time (seconds)');
+
+drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RVF');
+%h_legend = mylegend({'Pre Valid', 'Pre Invalid', 'Post Valid', 'Post Invalid'}, myColors);
+%set(h_legend, 'box', 'off')
+
+%% Betas from GLM analysis removing the response from the blank trials
+
+%create model HRF
+[~, dd.hrf] = hrfDoubleGamma([], frameperiod, [], 'defaultParams=1');
+dd = makeDesignMatrix(dd,[],verbose, scanNum);
+
+temp = 100*(tSeries-1);
+residual = temp - (dd.scm)';
+nhdr = length(stimNames);
+
+% compute the betas
+hdrlen = 1;
+dGLM2 = getr2timecourse(residual, nhdr, hdrlen, d.scm, d.tr); 
+yMax = ceil(10*(max(dGLM2.ehdr(:)+max(dGLM2.ehdrste(:)))))/10;
+yMin = min(0, floor(10*(min(dGLM2.ehdr(:)-max(dGLM2.ehdrste(:)))))/10);
+
+subplot(1,3,3); 
 cla
 for iBar=1:4
-    bar([iBar iBar+6],      dGLM.ehdr([iBar iBar+4],1)*dGLM.ehdr(11), 0.1, 'facecolor', myColors{iBar});
+    bar([iBar iBar+6],      dGLM2.ehdr([iBar iBar+4],1), 0.1, 'facecolor', myColors{iBar});
     hold on
-    errorbar([iBar iBar+6], dGLM.ehdr([iBar iBar+4],1)*dGLM.ehdr(11), sqrt((dGLM.ehdrste([iBar iBar+4],1)).^2+(dGLM.ehdrste(11)).^2), 'o', 'color', myColors{iBar});
+    errorbar([iBar iBar+6], dGLM2.ehdr([iBar iBar+4],1), dGLM2.ehdrste([iBar iBar+4], 1), 'o', 'color', myColors{iBar});
 end
 xaxis([0 11]);
 axis square;
 drawPublishAxis('yTick', [0 yMax/2 yMax]);
-
-% mybar(reshape(dGLM.ehdr(1:8,1),4,2)', 'yError', reshape(dGLM.ehdrste(1:8,1),4,2)', 'dispValues', 0, 'groupLabels', {'Target in LVF', 'Target in RVF'},...
-% 'yLabelText', 'fMRI response (% change image intensity)','yAxisMin', yMin, 'yAxisMax',yMax, 'withinGroupColors',myColors)
-% , 'dispValues', 0, 'groupLabels', {'Target in LVF', 'Target in RVF'},...
-% 'yLabelText', 'fMRI response (% change image intensity)','yAxisMin', yMin, 'yAxisMax',yMax, 'withinGroupColors',myColors)
-
 
 %save the PDF of the time courses
 %print_pdf(fullfile('Figures', sprintf('%s.pdf', stripext(roiName))));
