@@ -195,7 +195,9 @@ residual = temp - (dd.scm)';
 residual = (residual/100)+1;
 nhdr = length(stimNames);
 hdrlen = round(24/frameperiod);
-dDec2 = getr2timecourse(residual, nhdr, hdrlen, scm, frameperiod); 
+dDec2 = getr2timecourse(residual, nhdr, hdrlen, scm, frameperiod);
+
+keyboard
 
 %% Plot the MRI response over time
 

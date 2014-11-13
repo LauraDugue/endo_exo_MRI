@@ -101,26 +101,27 @@ drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25]);
 % h_legend = mylegend({'Pre Valid', 'Pre Invalid', 'Post Valid', 'Post Invalid'}, myColors);
 % set(h_legend, 'box', 'off')
 
-
-
 %% Betas from GLM analysis
 % get the 'd' structure, loading analysis of needed
 
-yMax = ceil(10*(max([glmehdrC; glmehdrI]+max([glmehdrsteC; glmehdrsteI]))))/10;
-yMin = floor(10*(min([glmehdrC; glmehdrI]-min([glmehdrsteC; glmehdrsteI]))))/10;
-yMin = min(0, yMin);
+% yMax = ceil(10*(max([glmehdrC; glmehdrI]+max([glmehdrsteC; glmehdrsteI]))))/10;
+% yMin = floor(10*(min([glmehdrC; glmehdrI]-min([glmehdrsteC; glmehdrsteI]))))/10;
+% yMin = min(0, yMin);
 
 subplot(1,2,2); cla
-mybar(glmehdrC', 'yError', glmehdrsteC', 'dispValues', 0, 'groupLabels', {' '},'yLabelText',...
-    'fMRI response (% change image intensity)','yAxisMin', yMin, 'yAxisMax',yMax, 'withinGroupColors',myColors);
+
+groupLabs = {'Pre Valid', 'Pre Invalid', 'Post Valid', 'Post Invalid', 'Distractor'};
+mybar(glmehdrC, 'yError', glmehdrsteC, 'dispValues', 0,'yLabelText',...
+    'fMRI response (% change image intensity)','yAxisMin', yMin, 'yAxisMax',yMax, 'groupColors',myColors);
 
 axis square;
+hline(0)
 drawPublishAxis('yTick', [yMin yMax]);
 
 if basRemov
-    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/removed/' anal1 '_' anal2]);
+    namefig=sprintf(['/Volumes/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/removed/' anal1 '_' anal2 '_restricted']);
 else
-    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/original/' anal1 '_' anal2]);
+    namefig=sprintf(['/Volumes/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/original/' anal1 '_' anal2 '_original']);
 end
 print ('-djpeg', '-r500',namefig);
 

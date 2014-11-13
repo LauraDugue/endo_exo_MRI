@@ -35,7 +35,7 @@ for i=1:length(rois)
 end
 % and average across voxels, based on localizer response
 tSeries = nanmean(tSeries(goodVox,:));
-
+keyboard
 % get the stimvol
 if strcmp(attCond,'exo')
     if exist('Anal/exostimvol_Corb.mat', 'file')

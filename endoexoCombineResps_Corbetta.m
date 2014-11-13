@@ -120,6 +120,6 @@ mybar(toplot', 'yError', toplotste', 'dispValues', 0, 'groupLabels', {' '},'yLab
 axis square;
 drawPublishAxis('yTick', [yMin yMax]);
 
-namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/Corbetta/' anal1 '_' anal2]);
-print ('-djpeg', '-r500',namefig);
+% namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/Corbetta/' anal1 '_' anal2]);
+% print ('-djpeg', '-r500',namefig);
 
