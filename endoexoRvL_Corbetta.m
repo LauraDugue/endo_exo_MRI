@@ -66,7 +66,7 @@ elseif strcmp(attCond,'endo')
         save Anal/endostimvol_Corb.mat stimvol stimNames var
     end
 end
-
+keyboard
 % make stimulus convolution analysis
 scm = makescm(v, round(24/frameperiod), 1, stimvol);
 

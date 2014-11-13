@@ -17,7 +17,7 @@ end
 getArgs(varargin, [], 'verbose=0');
 if ieNotDefined('scanNum'); scanNum = 2;end
 if ieNotDefined('groupNum'); groupNum = 'Concatenation';end
-if ieNotDefined('locThresh'); locThresh = 0.2; end
+if ieNotDefined('locThresh'); locThresh = 0; end
 if ieNotDefined('locGroup'); locGroup = 'Averages'; end
 if ieNotDefined('locScan'); locScan = 1; end
 
@@ -130,7 +130,13 @@ drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RV
 %% Betas from GLM analysis
 
 %create model HRF
-[params, d.hrf] = hrfDoubleGamma([], frameperiod, [], 'defaultParams=1');
+%[params, d.hrf] = hrfDoubleGamma([], frameperiod, [], 'defaultParams=1');
+params.x = 6;
+params.y = 16;
+params.z = 6;
+params.stimDur = 0.01;
+params.incDeriv = 0;
+d.hrf = hrfDiffGamma(1.75, params);
 d.tr = frameperiod;
 d.dim = [1 1 1 length(tSeries)];
 d.stimvol = stimvol;
@@ -141,7 +147,8 @@ for iRun=1:length(stimvol)
 end
 verbose = 1;
 
-d = makeDesignMatrix(d,[],verbose, scanNum);
+params.scanParams{scanNum}.highpassDesign = 1;
+d = makeDesignMatrix(d,params,verbose, scanNum);
 % compute estimates and statistics
 %[d, out] = getGlmStatistics(d, params, verbose, precision, actualData);%, computeTtests,computeBootstrap);
 
@@ -158,14 +165,15 @@ for iBar=1:4
     hold on
     errorbar([iBar iBar+6], dGLM.ehdr([iBar iBar+4],1), dGLM.ehdrste([iBar iBar+4], 1), 'o', 'color', myColors{iBar});
 end
-xaxis([0 11]);
+xaxis([0 11])
 axis square;
-drawPublishAxis('yTick', [0 yMax/2 yMax]);
+drawPublishAxis('yTick', [0 yMax/2 yMax],'xTickLabel',{'LVF' 'RVF'});
+
+keyboard
 
 print('-djpeg','-r500',[roiName '_' attCond]);
 
 %% Remove the motor response (from the blank trials)
-
 dd.tr = frameperiod;
 dd.designSupersampling = 1;
 dd.dim = [1 1 1 length(tSeries)];
@@ -186,6 +194,7 @@ dd = makeDesignMatrix(dd,[],verbose, scanNum);
 
 temp = 100*(tSeries-1);
 residual = temp - (dd.scm)';
+residual = (residual/100)+1;
 nhdr = length(stimNames);
 hdrlen = round(24/frameperiod);
 dDec2 = getr2timecourse(residual, nhdr, hdrlen, scm, frameperiod); 
@@ -193,7 +202,7 @@ dDec2 = getr2timecourse(residual, nhdr, hdrlen, scm, frameperiod);
 %% Plot the MRI response over time
 
 % create a new figure
-smartfig('tSeriesPlot', 'reuse'); clf;
+smartfig('tSeriesPlot2', 'reuse'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('ROI: %s', fixBadChars(roiName, {'_',' '})));
 
@@ -224,14 +233,6 @@ drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RV
 %set(h_legend, 'box', 'off')
 
 %% Betas from GLM analysis removing the response from the blank trials
-
-%create model HRF
-[~, dd.hrf] = hrfDoubleGamma([], frameperiod, [], 'defaultParams=1');
-dd = makeDesignMatrix(dd,[],verbose, scanNum);
-
-temp = 100*(tSeries-1);
-residual = temp - (dd.scm)';
-nhdr = length(stimNames);
 
 % compute the betas
 hdrlen = 1;

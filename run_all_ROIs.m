@@ -1,4 +1,4 @@
-%% run all ROIs
+%% run_all_ROIs
 
 v = newView;
 %% Right exo
