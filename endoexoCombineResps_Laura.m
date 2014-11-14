@@ -86,8 +86,14 @@ hdrlen = 17;
 
 % plot contralateral responses first
 subplot(1,2,1); cla
-yMax = ceil(10*(max([ehdrC(:);ehdrI(:)]) + max([ehdrsteC(:);ehdrsteI(:)]) ))/10;
-yMin = floor(10*(min([ehdrC(:);ehdrI(:)]) - max([ehdrsteC(:);ehdrsteI(:)]) ))/10;
+yMaxhrf = ceil(10*(max([ehdrC(:);ehdrI(:)]) + max([ehdrsteC(:);ehdrsteI(:)]) ))/10;
+yMinhrf = floor(10*(min([ehdrC(:);ehdrI(:)]) - max([ehdrsteC(:);ehdrsteI(:)]) ))/10;
+
+yMaxglm = ceil(10*(max([glmehdrC; glmehdrI]+max([glmehdrsteC; glmehdrsteI]))))/10;
+yMinglm = floor(10*(min([glmehdrC; glmehdrI]-min([glmehdrsteC; glmehdrsteI]))))/10;
+
+yMax = max([yMaxglm yMaxhrf]);
+yMin = min([yMinglm yMinhrf]);
 
 for i=1:nhdr
   myerrorbar(aL.dDec.time, ehdrC(i,:), 'yError', ehdrsteC(i,:), 'MarkerFaceColor', myColors{i});
@@ -104,10 +110,6 @@ drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25]);
 %% Betas from GLM analysis
 % get the 'd' structure, loading analysis of needed
 
-% yMax = ceil(10*(max([glmehdrC; glmehdrI]+max([glmehdrsteC; glmehdrsteI]))))/10;
-% yMin = floor(10*(min([glmehdrC; glmehdrI]-min([glmehdrsteC; glmehdrsteI]))))/10;
-% yMin = min(0, yMin);
-
 subplot(1,2,2); cla
 
 groupLabs = {'Pre Valid', 'Pre Invalid', 'Post Valid', 'Post Invalid', 'Distractor'};
@@ -115,13 +117,13 @@ mybar(glmehdrC, 'yError', glmehdrsteC, 'dispValues', 0,'yLabelText',...
     'fMRI response (% change image intensity)','yAxisMin', yMin, 'yAxisMax',yMax, 'groupColors',myColors);
 
 axis square;
-hline(0)
+hline(0);
 drawPublishAxis('yTick', [yMin yMax]);
 
 if basRemov
-    namefig=sprintf(['/Volumes/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/removed/' anal1 '_' anal2 '_restricted']);
+    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/removed/' anal1 '_' anal2 '_restricted']);
 else
-    namefig=sprintf(['/Volumes/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/original/' anal1 '_' anal2 '_original']);
+    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/Images_Comb/' attCond '/original/' anal1 '_' anal2 '_original']);
 end
 print ('-djpeg', '-r500',namefig);
 
