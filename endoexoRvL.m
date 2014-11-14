@@ -197,8 +197,6 @@ nhdr = length(stimNames);
 hdrlen = round(24/frameperiod);
 dDec2 = getr2timecourse(residual, nhdr, hdrlen, scm, frameperiod);
 
-keyboard
-
 %% Plot the MRI response over time
 
 % create a new figure
