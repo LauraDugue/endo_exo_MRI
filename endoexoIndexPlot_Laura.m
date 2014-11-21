@@ -15,6 +15,7 @@ end
 
 f = dir(['Anal/' attCond '/anal_*.mat']);
 
+keyboard
 %% New index
 ind.name = cell(length(f), 1);
 

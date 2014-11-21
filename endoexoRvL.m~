@@ -257,6 +257,5 @@ drawPublishAxis('yTick', [0 yMax/2 yMax],'xTickLabel',{'LVF' 'RVF'});
 if ~exist('Anal', 'dir')
   mkdir('Anal');
 end
-temp = fixBadChars(num2str(locThresh), [],{'.',''});
-eval(sprintf(['save Anal/' attCond '/threshold/anal_%s_' attCond '_LocThresh' temp '.mat dGLM dGLM2 dDec dDec2 rois'], stripext(roiName)))
+eval(sprintf(['save Anal/' attCond '/anal_%s_' attCond '_' num2str(locThresh) '.mat dGLM dGLM2 dDec dDec2 rois'], stripext(roiName)))
 

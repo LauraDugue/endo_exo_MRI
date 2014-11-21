@@ -19,11 +19,13 @@ if ieNotDefined('analdir'); analdir = ['Anal/' attCond];end
 
 aL = load(fullfile(analdir,anal1));
 
-aR = load(fullfile(analdir, anal2));
+aR = load(fullfile(analdir,anal2));
 
 if basRemov
     aL.dDec = aL.dDec2;
     aL.dGLM = aL.dGLM2;
+    aR.dDec = aR.dDec2;
+    aR.dGLM = aR.dGLM2;
 end
 
 % concat and  average ipsilateral responses
