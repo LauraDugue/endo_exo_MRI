@@ -17,7 +17,7 @@ end
 getArgs(varargin, [], 'verbose=0');
 if ieNotDefined('scanNum'); scanNum = 2;end
 if ieNotDefined('groupNum'); groupNum = 'Concatenation';end
-if ieNotDefined('locThresh'); locThresh = 0.6; end
+if ieNotDefined('locThresh'); locThresh = 0; end
 if ieNotDefined('locGroup'); locGroup = 'Averages'; end
 if ieNotDefined('locScan'); locScan = 1; end
 
@@ -258,5 +258,7 @@ if ~exist('Anal', 'dir')
   mkdir('Anal');
 end
 temp = fixBadChars(num2str(locThresh), [],{'.',''});
-eval(sprintf(['save Anal/' attCond '/threshold/anal_%s_' attCond '_LocThresh' temp '.mat dGLM dGLM2 dDec dDec2 rois'], stripext(roiName)))
+% eval(sprintf(['save Anal/' attCond '/threshold/anal_%s_' attCond '_LocThresh' temp '.mat dGLM dGLM2 dDec dDec2 rois'], stripext(roiName)))
+
+eval(sprintf(['save Anal/' attCond '/anal_%s_' attCond '.mat dGLM dGLM2 dDec dDec2 rois'], stripext(roiName)))
 

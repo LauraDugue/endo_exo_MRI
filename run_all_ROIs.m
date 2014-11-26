@@ -1,6 +1,24 @@
 %% run_all_ROIs
 
 v = newView;
+v = endoexoRvL(v, 'r_ips1','exo');
+v = endoexoRvL(v, 'r_ips2','exo');
+v = endoexoRvL(v, 'r_ips3','exo');
+v = endoexoRvL(v, 'r_ips4','exo');
+v = endoexoRvL(v, 'l_ips1','exo');
+v = endoexoRvL(v, 'l_ips2','exo');
+v = endoexoRvL(v, 'l_ips3','exo');
+v = endoexoRvL(v, 'l_ips4','exo');
+
+v = endoexoRvL(v, 'r_ips1','endo');
+v = endoexoRvL(v, 'r_ips2','endo');
+v = endoexoRvL(v, 'r_ips3','endo');
+v = endoexoRvL(v, 'r_ips4','endo');
+v = endoexoRvL(v, 'l_ips1','endo');
+v = endoexoRvL(v, 'l_ips2','endo');
+v = endoexoRvL(v, 'l_ips3','endo');
+v = endoexoRvL(v, 'l_ips4','endo');
+
 %% Right exo
 v = endoexoRvL(v, 'r_v1','exo');
 v = endoexoRvL(v, 'r_v2d','exo');

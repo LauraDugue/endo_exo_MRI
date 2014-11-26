@@ -14,15 +14,15 @@ if ~any(nargin == [1])
 end
 
 % get listing of all files in analysis directory
-fEndo = dir(fullfile('Anal/endo/threshold/anal*.mat'));
-fExo = dir(fullfile('Anal/exo/threshold/anal*.mat'));
+fEndo = dir(fullfile('Anal/endo/anal*.mat'));
+fExo = dir(fullfile('Anal/exo/anal*.mat'));
 
 % init variables
 ehdrEndoC=[]; ehdrEndoI=[]; ehdrExoC=[]; ehdrExoI=[]; endoName=[];exoName=[];
 % loop over ROIs, accumulating the beta's from the GLM
 for iRoi = 1:length(fEndo)
     % load file from endo analysis
-    anal = load(fullfile('Anal/endo/threshold/', fEndo(iRoi).name));
+    anal = load(fullfile('Anal/endo/', fEndo(iRoi).name));
     if baselineCorrect
         anal.dGLM = anal.dGLM2;
     end
@@ -45,7 +45,7 @@ for iRoi = 1:length(fEndo)
     endoName{iRoi} = temp;
     
     % load file from exo analysis
-    anal = load(fullfile('Anal/exo/threshold/', fExo(iRoi).name));
+    anal = load(fullfile('Anal/exo/', fExo(iRoi).name));
     if baselineCorrect
         anal.dGLM = anal.dGLM2;
     end
@@ -70,7 +70,7 @@ for iRoi = 1:length(fEndo)
 end
 
     
-roiNames = {'lo1','lo2','mt','v1','v2','v3a','v3b','v3','v4','v7','vo1','vo2'};
+roiNames = {'lo1','lo2','mt','v1','v2','v3a','v3b','v3','v4','v7','vo1','vo2','ips1','ips2','ips3','ips4'};
 
 % average over right and left hemipshere betas
 aveExoC=[];aveExoI=[];aveEndoC=[];aveEndoI=[];
