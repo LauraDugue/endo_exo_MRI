@@ -28,15 +28,9 @@ frameperiod = viewGet(v, 'frameperiod');
 
 % get attCond
 if strfind(viewGet(v, 'description'), 'exo')
-    attCond = 'exo';
-    disp(sprintf('Attention condition: %s', attCond));
-elseif strfind(viewGet(v, 'description'), 'endo')
-    attCond = 'endo';
-    disp(sprintf('Attention condition: %s', attCond));
-else
-    disp(sprintf('UHOH: Attention unknown!!!'));
-    return;
-end
+    attCond = '
+
+keyboard
 
 %% Load the fMRI time series within the ROI
 rois = loadROITSeries(v, roiName, scanNum, groupNum, 'keepNAN',true);

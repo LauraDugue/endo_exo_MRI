@@ -100,7 +100,7 @@ for iRoi = 1:length(roiNames);
         'italic','color',[1 0 0],'HorizontalAlignment','Center');
 end
 
-scale_axis = 1.2;
+scale_axis = 2;
 axis([-scale_axis scale_axis -scale_axis scale_axis]);
 hline(0);
 vline(0);

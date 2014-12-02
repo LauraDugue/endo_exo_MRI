@@ -1,73 +1,17 @@
 %% run_all_ROIs
+%%% mr: scanNum=1 for exo and scanNum=2 for endo
+%%% id: scanNum=1 for exo and scanNum=2 for endo
+%%% nms: scanNum=1 for exo and scanNum=2 for endo
 
+scanNum = 1:2;
+hemi = {'l', 'r'};
+roiNames = {'v1', 'v2d', 'v3d', 'v3a', 'v3b', 'v4', 'lo1', 'lo2', 'vo1', 'vo2','v7'};%,'ips1','ips2','ips3','ips4'};
 v = newView;
-v = endoexoRvL(v, 'r_ips1','exo');
-v = endoexoRvL(v, 'r_ips2','exo');
-v = endoexoRvL(v, 'r_ips3','exo');
-v = endoexoRvL(v, 'r_ips4','exo');
-v = endoexoRvL(v, 'l_ips1','exo');
-v = endoexoRvL(v, 'l_ips2','exo');
-v = endoexoRvL(v, 'l_ips3','exo');
-v = endoexoRvL(v, 'l_ips4','exo');
 
-v = endoexoRvL(v, 'r_ips1','endo');
-v = endoexoRvL(v, 'r_ips2','endo');
-v = endoexoRvL(v, 'r_ips3','endo');
-v = endoexoRvL(v, 'r_ips4','endo');
-v = endoexoRvL(v, 'l_ips1','endo');
-v = endoexoRvL(v, 'l_ips2','endo');
-v = endoexoRvL(v, 'l_ips3','endo');
-v = endoexoRvL(v, 'l_ips4','endo');
-
-%% Right exo
-v = endoexoRvL(v, 'r_v1','exo');
-v = endoexoRvL(v, 'r_v2d','exo');
-v = endoexoRvL(v, 'r_v3d','exo');
-v = endoexoRvL(v, 'r_v3a','exo');
-v = endoexoRvL(v, 'r_v3b','exo');
-v = endoexoRvL(v, 'r_v4','exo');
-% v = endoexoRvL(v, 'r_v7','exo');
-v = endoexoRvL(v, 'r_lo1','exo');
-v = endoexoRvL(v, 'r_lo2','exo');
-v = endoexoRvL(v, 'r_vo1','exo');
-v = endoexoRvL(v, 'r_vo2','exo');
-% v = endoexoRvL(v, 'r_mt','exo');
-%% Left exo
-v = endoexoRvL(v, 'l_v1','exo');
-v = endoexoRvL(v, 'l_v2d','exo');
-v = endoexoRvL(v, 'l_v3d','exo');
-v = endoexoRvL(v, 'l_v3a','exo');
-% v = endoexoRvL(v, 'l_v3b','exo');
-v = endoexoRvL(v, 'l_v4','exo');
-% v = endoexoRvL(v, 'l_v7','exo');
-v = endoexoRvL(v, 'l_lo1','exo');
-v = endoexoRvL(v, 'l_lo2','exo');
-v = endoexoRvL(v, 'l_vo1','exo');
-v = endoexoRvL(v, 'l_vo2','exo');
-% v = endoexoRvL(v, 'l_mt','exo');
-%% Right endo
-v = endoexoRvL(v, 'r_v1','endo');
-v = endoexoRvL(v, 'r_v2d','endo');
-v = endoexoRvL(v, 'r_v3d','endo');
-v = endoexoRvL(v, 'r_v3a','endo');
-v = endoexoRvL(v, 'r_v3b','endo');
-v = endoexoRvL(v, 'r_v4','endo');
-% v = endoexoRvL(v, 'r_v7','endo');
-v = endoexoRvL(v, 'r_lo1','endo');
-v = endoexoRvL(v, 'r_lo2','endo');
-v = endoexoRvL(v, 'r_vo1','endo');
-v = endoexoRvL(v, 'r_vo2','endo');
-% v = endoexoRvL(v, 'r_mt','endo');
-%% Left endo
-v = endoexoRvL(v, 'l_v1','endo');
-v = endoexoRvL(v, 'l_v2d','endo');
-v = endoexoRvL(v, 'l_v3d','endo');
-v = endoexoRvL(v, 'l_v3a','endo');
-v = endoexoRvL(v, 'l_v3b','endo');
-v = endoexoRvL(v, 'l_v4','endo');
-% v = endoexoRvL(v, 'l_v7','endo');
-v = endoexoRvL(v, 'l_lo1','endo');
-v = endoexoRvL(v, 'l_lo2','endo');
-v = endoexoRvL(v, 'l_vo1','endo');
-v = endoexoRvL(v, 'l_vo2','endo');
-% v = endoexoRvL(v, 'l_mt','endo');
+for iScan=scanNum;
+    for iHemi=1:length(hemi)
+        for iRoi=1:length(roiNames)
+            v = endoexoRvL(v, sprintf('%s_%s', hemi{iHemi}, roiNames{iRoi}), sprintf('scanNum=%i', iScan));
+        end
+    end
+end
