@@ -21,6 +21,7 @@ fExo = dir(fullfile('Anal/exo/anal*.mat'));
 ehdrEndoC=[]; ehdrEndoI=[]; ehdrExoC=[]; ehdrExoI=[]; endoName=[];exoName=[];
 % loop over ROIs, accumulating the beta's from the GLM
 for iRoi = 1:length(fEndo)
+    
     % load file from endo analysis
     anal = load(fullfile('Anal/endo/', fEndo(iRoi).name));
     if baselineCorrect

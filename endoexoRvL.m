@@ -56,6 +56,7 @@ tSeries = nanmean(tSeries(goodVox,:));
 
 % get the stimvol
 if strcmp(attCond,'exo')
+    load('Anal/correctIncorrect_exo');
     if exist('Anal/exostimvol.mat', 'file')
         load('Anal/exostimvol.mat');
     else
@@ -74,6 +75,7 @@ if strcmp(attCond,'exo')
         save Anal/exostimvol.mat stimvol stimNames var
     end
 elseif strcmp(attCond,'endo')
+    load('Anal/correctIncorrect_endo');
     if exist('Anal/endostimvol.mat', 'file')
         load('Anal/endostimvol.mat');
     else
@@ -93,20 +95,33 @@ elseif strcmp(attCond,'endo')
     end
 end
 
+correctStimvol{1,11} = [];
+incorrectStimvol{1,11} = [];
+for iCond = 1:11
+    correctStimvol{iCond} = stimvol{iCond}(correctIncorrect{iCond}==1);
+    incorrectStimvol{iCond} = stimvol{iCond}(correctIncorrect{iCond}==-1);
+end
+
 % make stimulus convolution analysis
 scm = makescm(v, round(24/frameperiod), 1, stimvol);
+% scmCorrect = makescm(v, round(24/frameperiod), 1, correctStimvol);
+% scmIncorrect = makescm(v, round(24/frameperiod), 1, incorrectStimvol);
+% scmCI = cat(2, scmCorrect, scmIncorrect);
+scmCI = makescm(v, round(24/frameperiod), 1, [correctStimvol incorrectStimvol]);
 
 % compute the betas
 nhdr = length(stimNames);
 hdrlen = round(24/frameperiod);
-dDec = getr2timecourse(tSeries, nhdr, hdrlen, scm, frameperiod); 
+dDec = getr2timecourse(tSeries, nhdr, hdrlen, scm, frameperiod);
+nhdrCI = length(stimNames)*2;
+dDecCI = getr2timecourse(tSeries, nhdrCI, hdrlen, scmCI, frameperiod); 
 
 myColors{1}=[10 55 191]/255;
 myColors{2}=[191 0 0]/255;
 myColors{3}=[207 219 255]/255;
 myColors{4}=[255 204 204]/255;
 
-%% Plot the MRI response over time
+%% Plot the MRI response over time for all trials
 
 % create a new figure
 smartfig('tSeriesPlot', 'reuse'); clf;
@@ -143,6 +158,9 @@ drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RV
 
 %create model HRF
 %[params, d.hrf] = hrfDoubleGamma([], frameperiod, [], 'defaultParams=1');
+verbose = 1;
+params.scanParams{scanNum}.highpassDesign = 1;
+
 params.x = 6;
 params.y = 16;
 params.z = 6;
@@ -151,22 +169,33 @@ params.incDeriv = 0;
 d.hrf = hrfDiffGamma(1.75, params);
 d.tr = frameperiod;
 d.dim = [1 1 1 length(tSeries)];
-d.stimvol = stimvol;
 d.concatInfo = viewGet(v, 'concatInfo');
 d.designSupersampling = 1;
+
+%%% All trials
+d.stimvol = stimvol;
 for iRun=1:length(stimvol)
     d.stimDurations{iRun} = ones(size(stimvol{iRun}));
 end
-verbose = 1;
 
-params.scanParams{scanNum}.highpassDesign = 1;
+%%% Correct/incorrect trials
+dCI = d;
+dCI.stimvol = [correctStimvol incorrectStimvol];
+for iRun=1:length(dCI.stimvol)
+    dCI.stimDurations{iRun} = ones(size(dCI.stimvol{iRun}));
+end
+
 d = makeDesignMatrix(d,params,verbose, scanNum);
+dCI = makeDesignMatrix(dCI,params,verbose, scanNum);
+
 % compute estimates and statistics
 %[d, out] = getGlmStatistics(d, params, verbose, precision, actualData);%, computeTtests,computeBootstrap);
 
 % compute the betas
 hdrlen = 1;
-dGLM = getr2timecourse(tSeries, nhdr, hdrlen, d.scm, d.tr); 
+dGLM = getr2timecourse(tSeries, nhdr, hdrlen, d.scm, d.tr);
+dGLMCI = getr2timecourse(tSeries, nhdrCI, hdrlen, dCI.scm, dCI.tr); 
+
 yMax = ceil(10*(max(dGLM.ehdr(:)+max(dGLM.ehdrste(:)))))/10;
 yMin = min(0, floor(10*(min(dGLM.ehdr(:)-max(dGLM.ehdrste(:)))))/10);
 
@@ -188,26 +217,44 @@ dd.tr = frameperiod;
 dd.designSupersampling = 1;
 dd.dim = [1 1 1 length(tSeries)];
 dd.concatInfo = viewGet(v, 'concatInfo');
+dd.hrf = dDec.ehdr(11,:)';
+dd.hdrlen = 14;
+for iRun=1:dd.concatInfo.n
+    dd.concatInfo.hipassfilter{iRun} = [];
+end
+
+%%% All trials
 newstimvol = [];
 for iCond=1:length(d.stimvol)
     newstimvol = cat(2, newstimvol, d.stimvol{iCond});
 end
-for iRun=1:dd.concatInfo.n
-    dd.concatInfo.hipassfilter{iRun} = [];
-end
 newstimvol = sort(newstimvol);
 dd.stimvol{1} = newstimvol;
-dd.hrf = dDec.ehdr(11,:)';
-dd.hdrlen = 14;
 dd.stimDurations{1} = ones(size(dd.stimvol{1}));
-dd = makeDesignMatrix(dd,[],verbose, scanNum);
 
-temp = 100*(tSeries-1);
-residual = temp - (dd.scm)';
-residual = (residual/100)+1;
+%%% Correct/Incorrect trials
+ddCI = dd;
+newstimvol = [];
+for iCond=1:length(ddCI.stimvol)
+    newstimvol = cat(2, newstimvol, ddCI.stimvol{iCond});
+end
+newstimvol = sort(newstimvol);
+ddCI.stimvol{1} = newstimvol;
+ddCI.stimDurations{1} = ones(size(ddCI.stimvol{1}));
+
+dd = makeDesignMatrix(dd,[],verbose, scanNum);
+ddCI = makeDesignMatrix(ddCI,[],verbose, scanNum);
+
 nhdr = length(stimNames);
 hdrlen = round(24/frameperiod);
+temp = 100*(tSeries-1);
+
+residual = temp - (dd.scm)';
+residual = (residual/100)+1;
+residualCI = temp - (ddCI.scm)';
+residualCI = (residualCI/100)+1;
 dDec2 = getr2timecourse(residual, nhdr, hdrlen, scm, frameperiod);
+dDec2CI = getr2timecourse(residualCI, nhdrCI, hdrlen, scmCI, frameperiod);
 
 %% Plot the MRI response over time
 
@@ -246,7 +293,8 @@ drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RV
 
 % compute the betas
 hdrlen = 1;
-dGLM2 = getr2timecourse(residual, nhdr, hdrlen, d.scm, d.tr); 
+dGLM2 = getr2timecourse(residual, nhdr, hdrlen, d.scm, d.tr);
+dGLM2CI = getr2timecourse(residualCI, nhdrCI, hdrlen, dCI.scm, dCI.tr);
 yMax = ceil(10*(max(dGLM2.ehdr(:)+max(dGLM2.ehdrste(:)))))/10;
 yMin = min(0, floor(10*(min(dGLM2.ehdr(:)-max(dGLM2.ehdrste(:)))))/10);
 
