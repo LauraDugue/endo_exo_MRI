@@ -202,7 +202,7 @@ dGLM = getr2timecourse(residual, nhdr, hdrlen, d.scm, d.tr);
 dGLMCI = getr2timecourse(residual, nhdrCI, hdrlen, dCI.scm, dCI.tr);
 
 %% Plot the MRI response over time -- for both correct and incorrect
-smartfig('tSeriesPlot2', 'reuse'); clf;
+smartfig('tSeriesPlot1', 'reuse'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('ROI: %s', fixBadChars(roiName, {'_',' '})));
 
@@ -247,7 +247,7 @@ axis square;
 drawPublishAxis('yTick', [0 yMax/2 yMax],'xTickLabel',{'LVF' 'RVF'});
 
 %% Plot the MRI response over time -- ONLY for correct responses
-smartfig('tSeriesPlot3', 'reuse'); clf;
+smartfig('tSeriesPlot2', 'reuse'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('ROI: %s', fixBadChars(roiName, {'_',' '})));
 

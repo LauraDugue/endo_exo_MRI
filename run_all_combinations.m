@@ -1,5 +1,10 @@
 %% run_all_combinations
 obs = 'mr';
+
+%% JUST TPJ
+
+endoexoCombineResps_TPJ('anal_r_vTPJ_exo', 'exo',obs,1);
+
 %% Exogenous attention
 endoexoCombineResps_Laura('anal_l_v1_exo', 'anal_r_v1_exo', 'exo',obs,1);
 endoexoCombineResps_Laura('anal_l_v2d_exo', 'anal_r_v2d_exo', 'exo',obs,1);
