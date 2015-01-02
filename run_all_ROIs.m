@@ -15,3 +15,7 @@ for iScan=scanNum;
         end
     end
 end
+
+% Run vTPJ analysis but just on the right hemishphere
+v = endoexoRvL2(v, 'r_vTPJ', 'scanNum=1');
+v = endoexoRvL2(v, 'r_vTPJ', 'scanNum=2');

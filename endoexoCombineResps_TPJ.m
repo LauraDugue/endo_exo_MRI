@@ -5,10 +5,10 @@
 %       date: 06/25/14
 %    purpose: combine estimates from 
 %
-function retval = endoexoCombineResps_TPJ(anal1, attCond, obs, Correct, varargin)
+function retval = endoexoCombineResps_TPJ(anal1, attCond, obs, CI, baseRemove, varargin)
 
 % check arguments
-if ~any(nargin == [4])
+if ~any(nargin == [5])
   help endoexoCombineResps
   return
 end
@@ -19,31 +19,61 @@ if ieNotDefined('analdir'); analdir = ['Anal/' attCond];end
 
 a = load(fullfile(analdir,anal1));
 
-if Correct
+if strcmp(CI,'all') && baseRemove == 0
+    idx = 0;
+elseif strcmp(CI,'all') && baseRemove == 1
+    idx = 0;
+    a.dDec = a.dDecb;
+    a.dGLM = a.dGLMb;
+elseif strcmp(CI,'correct') && baseRemove == 0
     a.dDec = a.dDecCI;
     a.dGLM = a.dGLMCI;
+    idx = 0;
+elseif strcmp(CI,'correct') && baseRemove == 1
+    a.dDec = a.dDecCIb;
+    a.dGLM = a.dGLMCIb;
+    idx = 0;
+elseif strcmp(CI,'incorrect') && baseRemove == 0
+    a.dDec = a.dDecCI;
+    a.dGLM = a.dGLMCI;
+    idx = 11;
+elseif strcmp(CI,'incorrect') && baseRemove == 1
+    a.dDec = a.dDecCIb;
+    a.dGLM = a.dGLMCIb;
+    idx = 11;
 end
 
 % concat and  average ipsilateral responses
-% for left ROI, the first four response are ipsilateral
-% for right ROI, the second set of four respones are ipsilateral
-ehdrI = cat(3, a.dDec.ehdr(1:4,:), a.dDec.ehdr(5:8,:));
+ehdrI = cat(3, a.dDec.ehdr(1+idx:4+idx,:), a.dDec.ehdr(5+idx:8+idx,:));
 ehdrI = mean(ehdrI, 3);
 
-ehdrsteI = cat(3, a.dDec.ehdrste(1:4,:), a.dDec.ehdrste(5:8,:));
+ehdrsteI = cat(3, a.dDec.ehdrste(1+idx:4+idx,:), a.dDec.ehdrste(5+idx:8+idx,:));
 ehdrsteI = sqrt(sum(ehdrsteI.^2,3))/2;
 
-glmehdrI = cat(3, a.dGLM.ehdr(1:4,:), a.dGLM.ehdr(5:8,:));
+glmehdrI = cat(3, a.dGLM.ehdr(1+idx:4+idx,:), a.dGLM.ehdr(5+idx:8+idx,:));
 glmehdrI = mean(glmehdrI, 3);
 
-glmehdrsteI = cat(3, a.dGLM.ehdrste(1:4,:), a.dGLM.ehdrste(5:8,:));
+glmehdrsteI = cat(3, a.dGLM.ehdrste(1+idx:4+idx,:), a.dGLM.ehdrste(5+idx:8+idx,:));
 glmehdrsteI = sqrt(sum(glmehdrsteI.^2,3))/2;
 
 % plot them
 
 % create a new figure
 h = smartfig('tSeriesPlot'); clf;
-suptitle(sprintf(['vTPJ: ' attCond]));
+
+if strcmp(CI,'all') && baseRemove == 0
+    suptitle(sprintf(['vTPJ: ' attCond ' (all trials)']));
+elseif strcmp(CI,'all') && baseRemove == 1
+    suptitle(sprintf(['vTPJ: ' attCond ' (all trials - baseline removed)']));
+elseif strcmp(CI,'correct') && baseRemove == 0
+    suptitle(sprintf(['vTPJ: ' attCond ' (correct trials)']));
+elseif strcmp(CI,'correct') && baseRemove == 1
+    suptitle(sprintf(['vTPJ: ' attCond ' (correct trials - baseline removed)']));
+elseif strcmp(CI,'incorrect') && baseRemove == 0
+    suptitle(sprintf(['vTPJ: ' attCond ' (incorrect trials)']));
+elseif strcmp(CI,'incorrect') && baseRemove == 1
+    suptitle(sprintf(['vTPJ: ' attCond ' (incorrect trials - baseline removed)']));
+end
 
 % set the standard colors
 myColors{1}=[10 55 191]/255;
@@ -88,6 +118,19 @@ axis square;
 hline(0);
 drawPublishAxis('yTick', [yMin yMax]);
 
-namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/vTPJ_' attCond]);
+if strcmp(CI,'all') && baseRemove == 0
+    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/' obs '_vTPJ_' attCond '_all']);
+elseif strcmp(CI,'all') && baseRemove == 1
+    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/' obs '_vTPJ_' attCond '_all_baseRemoved']);
+elseif strcmp(CI,'correct') && baseRemove == 0
+    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/' obs '_vTPJ_' attCond '_correct']);
+elseif strcmp(CI,'correct') && baseRemove == 1
+    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/' obs '_vTPJ_' attCond '_correct_baseRemoved']);
+elseif strcmp(CI,'incorrect') && baseRemove == 0
+    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/' obs '_vTPJ_' attCond '_incorrect']);
+elseif strcmp(CI,'incorrect') && baseRemove == 1
+    namefig=sprintf(['/Local/Users/purpadmin/Laura/MRI/Data/' obs '/' obs 'Merge/' obs '_vTPJ_' attCond '_incorrect_baseRemoved']);
+end
+
 print ('-djpeg', '-r500',namefig);
 

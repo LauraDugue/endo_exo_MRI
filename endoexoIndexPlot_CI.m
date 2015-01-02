@@ -5,10 +5,10 @@
 %       date: 07/28/14
 %    purpose:
 %
-function retval = endoexoIndexPlot_CI(CI)
+function retval = endoexoIndexPlot_CI(CI,baseRemove)
 
 % check arguments
-if ~any(nargin == [1])
+if ~any(nargin == [2])
     help endoexoIndexPlot
     return
 end
@@ -23,13 +23,23 @@ ehdrEndoC=[]; ehdrEndoI=[]; ehdrExoC=[]; ehdrExoI=[]; endoName=[];exoName=[];
 for iRoi = 1:length(fEndo)
     % load file from endo analysis
     anal = load(fullfile('Anal/endo/', fEndo(iRoi).name));
-    if strcmp(CI,'all')
+    
+    if strcmp(CI,'all') && baseRemove == 0
         idx = 0;
-    elseif strcmp(CI,'correct')
+    elseif strcmp(CI,'all') && baseRemove == 1
+        idx = 0;
+        anal.dGLM = anal.dGLMb;
+    elseif strcmp(CI,'correct') && baseRemove == 0
         anal.dGLM = anal.dGLMCI;
         idx = 0;
-    elseif strcmp(CI,'incorrect')
+    elseif strcmp(CI,'correct') && baseRemove == 1
+        anal.dGLM = anal.dGLMCIb;
+        idx = 0;
+    elseif strcmp(CI,'incorrect') && baseRemove == 0
         anal.dGLM = anal.dGLMCI;
+        idx = 11;
+    elseif strcmp(CI,'incorrect') && baseRemove == 1
+        anal.dGLM = anal.dGLMCIb;
         idx = 11;
     end
     % first four resps are 'contralateral' for right hemi ROIs
@@ -81,7 +91,9 @@ for iRoi = 1:length(fEndo)
     
 end
 
-roiNames = {'lo1','lo2','mt','v1','v2','v3a','v3b','v3','v4','v7','vo1','vo2','ips1','ips2','ips3','ips4'};
+% roiNames = {'mtplus','v1','v2','v3a','v3b','v3','v4','v7','vo1','vo2','ips1','ips2','ips3','ips4'};%
+% roiNames = {'v1','v2','v3a','v3b','v3','v4','vo1','vo2','lo1','lo2'};%
+roiNames = {'v7','ips1','ips2','ips3','ips4'};%
 
 % average over right and left hemipshere betas
 aveExoC=[];aveExoI=[];aveEndoC=[];aveEndoI=[];
@@ -111,7 +123,7 @@ for iRoi = 1:length(roiNames);
         'italic','color',[1 0 0],'HorizontalAlignment','Center');
 end
 
-scale_axis = 4;
+scale_axis = 10;
 axis([-scale_axis scale_axis -scale_axis scale_axis]);
 hline(0);
 vline(0);
@@ -120,12 +132,76 @@ xlabel('<------ invalid     valid ------>', 'FontSize', 14, 'FontAngle', 'Italic
 set(gca, 'YTick', [-scale_axis 0 scale_axis], 'XTick', [-scale_axis 0 scale_axis], 'tickdir', 'out')
 axis square
 
-if strcmp(CI,'all')
+if strcmp(CI,'all') && baseRemove == 0
     title('All trials','FontSize', 16)
-elseif strcmp(CI,'correct')
+elseif strcmp(CI,'all') && baseRemove == 1
+    title('All trials - baseline removed','FontSize', 16)
+elseif strcmp(CI,'correct') && baseRemove == 0
     title('Correct trials only','FontSize', 16)
-elseif strcmp(CI,'incorrect')
+elseif strcmp(CI,'correct') && baseRemove == 1
+    title('Correct trials only - baseline removed','FontSize', 16)
+elseif strcmp(CI,'incorrect') && baseRemove == 0
     title('Incorrect trials only','FontSize', 16)
+elseif strcmp(CI,'incorrect') && baseRemove == 1
+    title('Incorrect trials only - baseline removed','FontSize', 16)
 end
 
-
+%% Exo only 
+% smartfig('indindplot'); clf; hold on;
+% for iRoi = 1:length(roiNames);
+%     h2 = text(exoVI(iRoi), exoPP(iRoi), upper(roiNames{iRoi}),'FontSize',14,'FontWeight','bold','FontAngle',...
+%         'italic','color',[1 0 0],'HorizontalAlignment','Center');
+% end
+% 
+% scale_axis = 10;
+% axis([-scale_axis scale_axis -scale_axis scale_axis]);
+% hline(0);
+% vline(0);
+% ylabel('<------ post-cue     pre-cue ------>','FontSize', 14, 'FontAngle', 'Italic');
+% xlabel('<------ invalid     valid ------>', 'FontSize', 14, 'FontAngle', 'Italic');
+% set(gca, 'YTick', [-scale_axis 0 scale_axis], 'XTick', [-scale_axis 0 scale_axis], 'tickdir', 'out')
+% axis square
+% 
+% if strcmp(CI,'all') && baseRemove == 0
+%     title('Exo (All trials)','FontSize', 16)
+% elseif strcmp(CI,'all') && baseRemove == 1
+%     title('Exo (All trials - baseline removed)','FontSize', 16)
+% elseif strcmp(CI,'correct') && baseRemove == 0
+%     title('Exo (Correct trials only)','FontSize', 16)
+% elseif strcmp(CI,'correct') && baseRemove == 1
+%     title('Exo (Correct trials only - baseline removed)','FontSize', 16)
+% elseif strcmp(CI,'incorrect') && baseRemove == 0
+%     title('Exo (Incorrect trials only)','FontSize', 16)
+% elseif strcmp(CI,'incorrect') && baseRemove == 1
+%     title('Exo (Incorrect trials only - baseline removed)','FontSize', 16)
+% end
+% 
+%% Endo only
+% smartfig('indindplot'); clf; hold on;
+% for iRoi = 1:length(roiNames);
+%     h1 = text(endoVI(iRoi), endoPP(iRoi), upper(roiNames{iRoi}),'FontSize',14,'FontWeight','bold','FontAngle',...
+%         'italic','color',[0 0 1],'HorizontalAlignment','Center');
+% end
+% 
+% scale_axis = 10;
+% axis([-scale_axis scale_axis -scale_axis scale_axis]);
+% hline(0);
+% vline(0);
+% ylabel('<------ post-cue     pre-cue ------>','FontSize', 14, 'FontAngle', 'Italic');
+% xlabel('<------ invalid     valid ------>', 'FontSize', 14, 'FontAngle', 'Italic');
+% set(gca, 'YTick', [-scale_axis 0 scale_axis], 'XTick', [-scale_axis 0 scale_axis], 'tickdir', 'out')
+% axis square
+% 
+% if strcmp(CI,'all') && baseRemove == 0
+%     title('Endo (All trials)','FontSize', 16)
+% elseif strcmp(CI,'all') && baseRemove == 1
+%     title('Endo (All trials - baseline removed)','FontSize', 16)
+% elseif strcmp(CI,'correct') && baseRemove == 0
+%     title('Endo (Correct trials only)','FontSize', 16)
+% elseif strcmp(CI,'correct') && baseRemove == 1
+%     title('Endo (Correct trials only - baseline removed)','FontSize', 16)
+% elseif strcmp(CI,'incorrect') && baseRemove == 0
+%     title('Endo (Incorrect trials only)','FontSize', 16)
+% elseif strcmp(CI,'incorrect') && baseRemove == 1
+%     title('Endo (Incorrect trials only - baseline removed)','FontSize', 16)
+% end
