@@ -17,7 +17,7 @@ end
 getArgs(varargin, [], 'verbose=0');
 if ieNotDefined('scanNum'); scanNum = 3;end
 if ieNotDefined('groupNum'); groupNum = 'Concatenation';end
-if ieNotDefined('locThresh'); locThresh = 0; end
+if ieNotDefined('locThresh'); locThresh = 0.3; end
 if ieNotDefined('locGroup'); locGroup = 'Averages'; end
 if ieNotDefined('locScan'); locScan = 1; end
 
@@ -70,12 +70,13 @@ if strcmp(attCond,'exo')
             {'CueCond=[5 6 7 8]','PrePost=1','targLoc=2'}, ...
             {'CueCond=[1 2 3 4]','PrePost=2','targLoc=2'}, ...
             {'CueCond=[5 6 7 8]','PrePost=2','targLoc=2'}, ...
-            {'CueCond=[1:10]'}, ...
             {'CueCond=1:9','cueLoc=1'}, ...
             {'CueCond=1:9','cueLoc=2'}, ...
-            {'CueCond=1:8'}});
+            });
         save Anal/exostimvolCorb.mat stimvol stimNames var
     end
+    % {'CueCond=1:8'}
+%                 {'CueCond=[1:10]'}, ...
 elseif strcmp(attCond,'endo')
     load('Anal/correctIncorrect_endo_blinks');
     if exist('Anal/endostimvolCorb.mat', 'file')
@@ -90,12 +91,13 @@ elseif strcmp(attCond,'endo')
             {'CueCond=[7 8]','PrePost=1','targLoc=2'}, ...
             {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=2'}, ...
             {'CueCond=[7 8]','PrePost=2','targLoc=2'}, ...
-            {'CueCond=[1:10]'}, ...
             {'CueCond=1:9','cueLoc=1'}, ...
             {'CueCond=1:9','cueLoc=2'}, ...
-            {'CueCond=1:8'}});
+            });
         save Anal/endostimvolCorb.mat stimvol stimNames var
     end
+    %             {'CueCond=[1:10]'}, ...
+    %             {'CueCond=1:8'}
 end
 
 % get stimvols for correct and incorrect trials
@@ -134,7 +136,7 @@ myColors{7}=[0 0 0]/255;
 %% Betas from GLM analysis
 % creates design matrix and d structure for computing GLM
 verbose = 1;
-params.scanParams{scanNum}.highpassDesign = 0;
+params.scanParams{scanNum}.highpassDesign = 1;
 
 % create model HRF
 params.x = 6;
@@ -266,8 +268,11 @@ smartfig('tSeriesPlot3', 'reuse'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('Remaining trials (%s), nVox=%i', fixBadChars(roiName, {'_',' '}), sum(goodVox)));
 
-subplot(1,2,1); cla
-for i=17:21
+subplot(2,1,1); cla
+yMax = ceil(10*(max(dDec.ehdr(:)+max(dDec.ehdrste(:)))))/10;
+yMin = min(0, floor(10*(min(dDec.ehdr(:)-max(dDec.ehdrste(:)))))/10);
+
+for i=17:19
   myerrorbar(dDec.time, dDec.ehdr(i,:), 'yError', dDec.ehdrste(i,:), 'MarkerFaceColor', myColors{i-16});
 end
 axis square
@@ -276,20 +281,20 @@ xlabel('Time (seconds)');
 drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RVF');
 
 % - GLM - %
-%%
-subplot(1,2,2); 
-yMax = ceil(10*(max(dGLM.ehdr(17:21)+max(dGLM.ehdrste(17:21)))))/10;
-yMin = min(0, floor(10*(min(dGLM.ehdr(17:21)-max(dGLM.ehdrste(17:21)))))/10);
+subplot(2,1,2); 
+yMax = ceil(10*(max(dGLM.ehdr(17:19)+max(dGLM.ehdrste(17:19)))))/10;
+yMin = min(0, floor(10*(min(dGLM.ehdr(17:19)-max(dGLM.ehdrste(17:19)))))/10);
 cla
-for iBar=1:5
-    bar(iBar, dGLM.ehdr(iBar+16),  0.4, 'facecolor', myColors{iBar})
+for iBar=17:19
+    bar(iBar-16, dGLM.ehdr(iBar),  0.4, 'facecolor', myColors{iBar-16})
     hold on
-    errorbar(iBar , dGLM.ehdr(iBar+16), dGLM.ehdrste(iBar+16), 'o', 'color', myColors{iBar});
+    errorbar(iBar-16 , dGLM.ehdr(iBar), dGLM.ehdrste(iBar), 'o', 'color', myColors{iBar-16});
 end
 ylim([yMin yMax])
 axis square;
 box off 
-drawPublishAxis('yTick', [yMin 0 yMax],'xTick', [1:5], 'xTickLabel', {'Response' 'CueL' 'CueR' 'Stimulus' 'Blinks'});
+drawPublishAxis('yTick', [yMin 0 yMax],'xTick', [1:3], 'xTickLabel', {'CueL' 'CueR' 'Blinks'});
+
 
 %%
 

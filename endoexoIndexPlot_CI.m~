@@ -29,27 +29,24 @@ for iRoi = 1:length(fEndo)
     % load file from endo analysis
     anal = load(fullfile('Anal/endo/', fEndo(iRoi).name));
     
-    if strcmp(CI,'all') && baseRemove == 0 && Corb == 0
+    if strcmp(CI,'all') && baseRemove == 0
         idx = 0;
-    elseif strcmp(CI,'all') && baseRemove == 1 && Corb == 0
+    elseif strcmp(CI,'all') && baseRemove == 1
         idx = 0;
         anal.dGLM = anal.dGLMb;
-    elseif strcmp(CI,'correct') && baseRemove == 0 && Corb == 0
+    elseif strcmp(CI,'correct') && baseRemove == 0
         anal.dGLM = anal.dGLMCI;
         idx = 0;
-    elseif strcmp(CI,'correct') && baseRemove == 1 && Corb == 0
+    elseif strcmp(CI,'correct') && baseRemove == 1
         anal.dGLM = anal.dGLMCIb;
         idx = 0;
-    elseif strcmp(CI,'incorrect') && baseRemove == 0 && Corb == 0
+    elseif strcmp(CI,'incorrect') && baseRemove == 0
         anal.dGLM = anal.dGLMCI;
         idx = 11;
-    elseif strcmp(CI,'incorrect') && baseRemove == 1 && Corb == 0
+    elseif strcmp(CI,'incorrect') && baseRemove == 1
         anal.dGLM = anal.dGLMCIb;
         idx = 11;
-    elseif strcmp(CI,'correct') && Corb == 1
-        idx = 0;
-    elseif strcmp(CI,'correct') && Corb == 1
-        idx = 8;
+    elseif 
     end
     % first four resps are 'contralateral' for right hemi ROIs
     if strfind(fEndo(iRoi).name, '_r_')
@@ -71,36 +68,14 @@ for iRoi = 1:length(fEndo)
     
     % load file from exo analysis
     anal = load(fullfile('Anal/exo/', fExo(iRoi).name));
-%     if strcmp(CI,'all')
-%         idx = 0;
-%     elseif strcmp(CI,'correct')
-%         anal.dGLM = anal.dGLMCI;
-%         idx = 0;
-%     elseif strcmp(CI,'incorrect')
-%         anal.dGLM = anal.dGLMCI;
-%         idx = 11;
-%     end
-    if strcmp(CI,'all') && baseRemove == 0 && Corb == 0
+    if strcmp(CI,'all')
         idx = 0;
-    elseif strcmp(CI,'all') && baseRemove == 1 && Corb == 0
-        idx = 0;
-        anal.dGLM = anal.dGLMb;
-    elseif strcmp(CI,'correct') && baseRemove == 0 && Corb == 0
+    elseif strcmp(CI,'correct')
         anal.dGLM = anal.dGLMCI;
         idx = 0;
-    elseif strcmp(CI,'correct') && baseRemove == 1 && Corb == 0
-        anal.dGLM = anal.dGLMCIb;
-        idx = 0;
-    elseif strcmp(CI,'incorrect') && baseRemove == 0 && Corb == 0
+    elseif strcmp(CI,'incorrect')
         anal.dGLM = anal.dGLMCI;
         idx = 11;
-    elseif strcmp(CI,'incorrect') && baseRemove == 1 && Corb == 0
-        anal.dGLM = anal.dGLMCIb;
-        idx = 11;
-    elseif strcmp(CI,'correct') && Corb == 1
-        idx = 0;
-    elseif strcmp(CI,'correct') && Corb == 1
-        idx = 8;
     end
     % first four resps are 'contralateral' for right hemi ROIs
     if strfind(fExo(iRoi).name, '_r_')

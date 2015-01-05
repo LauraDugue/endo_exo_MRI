@@ -73,9 +73,10 @@ if strcmp(attCond,'exo')
             {'CueCond=[1:10]'}, ...
             {'CueCond=1:9','cueLoc=1'}, ...
             {'CueCond=1:9','cueLoc=2'}, ...
-            {'CueCond=1:8'}});
+            });
         save Anal/exostimvolCorb.mat stimvol stimNames var
     end
+    % {'CueCond=1:8'}
 elseif strcmp(attCond,'endo')
     load('Anal/correctIncorrect_endo_blinks');
     if exist('Anal/endostimvolCorb.mat', 'file')
@@ -93,9 +94,10 @@ elseif strcmp(attCond,'endo')
             {'CueCond=[1:10]'}, ...
             {'CueCond=1:9','cueLoc=1'}, ...
             {'CueCond=1:9','cueLoc=2'}, ...
-            {'CueCond=1:8'}});
+            });
         save Anal/endostimvolCorb.mat stimvol stimNames var
     end
+    %             {'CueCond=1:8'}
 end
 
 % get stimvols for correct and incorrect trials
@@ -114,12 +116,7 @@ stimvol = [correctStimvol incorrectStimvol stimvol{9:end} blinkStimvol];
 % make stimulus convolution matrix 
 scm = makescm(v, round(24/frameperiod), 1, stimvol);
 
-scm = makescm(d, round(24/frameperiod), 0, stimvol);
-
-d.dim = 
-d.stimvol = 
-d.concatInfo = 
-d.hdrlen = 24;
+%scm = makescm(d, round(24/frameperiod), 0, stimvol);
 
 
 % compute the betas
@@ -139,7 +136,7 @@ myColors{7}=[0 0 0]/255;
 %% Betas from GLM analysis
 % creates design matrix and d structure for computing GLM
 verbose = 1;
-params.scanParams{scanNum}.highpassDesign = 0;
+params.scanParams{scanNum}.highpassDesign = 1;
 
 % create model HRF
 params.x = 6;
@@ -161,7 +158,6 @@ end
 d = makeDesignMatrix(d,params,verbose, scanNum);
 
 hdrlen = 1;
-keyboard
 dGLM = getr2timecourse(tSeries, nhdr, hdrlen, d.scm, d.tr);
 
 %% Plot the MRI response over time for CORRECT trials
@@ -273,7 +269,10 @@ smartfig('tSeriesPlot3', 'reuse'); clf;
 suptitle(sprintf('Remaining trials (%s), nVox=%i', fixBadChars(roiName, {'_',' '}), sum(goodVox)));
 
 subplot(1,2,1); cla
-for i=17:21
+yMax = ceil(10*(max(dDec.ehdr(:)+max(dDec.ehdrste(:)))))/10;
+yMin = min(0, floor(10*(min(dDec.ehdr(:)-max(dDec.ehdrste(:)))))/10);
+
+for i=17:20
   myerrorbar(dDec.time, dDec.ehdr(i,:), 'yError', dDec.ehdrste(i,:), 'MarkerFaceColor', myColors{i-16});
 end
 axis square
@@ -282,15 +281,14 @@ xlabel('Time (seconds)');
 drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RVF');
 
 % - GLM - %
-%%
 subplot(1,2,2); 
-yMax = ceil(10*(max(dGLM.ehdr(17:21)+max(dGLM.ehdrste(17:21)))))/10;
-yMin = min(0, floor(10*(min(dGLM.ehdr(17:21)-max(dGLM.ehdrste(17:21)))))/10);
+yMax = ceil(10*(max(dGLM.ehdr(17:20)+max(dGLM.ehdrste(17:20)))))/10;
+yMin = min(0, floor(10*(min(dGLM.ehdr(17:20)-max(dGLM.ehdrste(17:20)))))/10);
 cla
-for iBar=1:5
-    bar(iBar, dGLM.ehdr(iBar+16),  0.4, 'facecolor', myColors{iBar})
+for iBar=17:21
+    bar(iBar-16, dGLM.ehdr(iBar),  0.4, 'facecolor', myColors{iBar-16})
     hold on
-    errorbar(iBar , dGLM.ehdr(iBar+16), dGLM.ehdrste(iBar+16), 'o', 'color', myColors{iBar});
+    errorbar(iBar-16 , dGLM.ehdr(iBar), dGLM.ehdrste(iBar), 'o', 'color', myColors{iBar-16});
 end
 ylim([yMin yMax])
 axis square;
