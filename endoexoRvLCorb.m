@@ -156,7 +156,6 @@ end
 d = makeDesignMatrix(d,params,verbose, scanNum);
 
 hdrlen = 1;
-keyboard
 dGLM = getr2timecourse(tSeries, nhdr, hdrlen, d.scm, d.tr);
 
 %% Plot the MRI response over time for CORRECT trials
