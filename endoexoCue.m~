@@ -72,8 +72,6 @@ roiNames = {'v1','v2','v3a','v3b','v3','v4','v7','vo1','vo2','ips1','ips2','ips3
 % roiNames = {'v1','v2','v3a','v3b','v3','v4','vo1','vo2','lo1','lo2'};%
 % roiNames = {'v7','ips1','ips2','ips3','ips4'};%
 
-keyboard
-
 % average over right and left hemipshere betas
 aveExoC=[];aveExoI=[];aveExoAll=[];aveEndoC=[];aveEndoI=[];aveEndoAll=[];
 for iRoi=1:length(roiNames)
@@ -89,13 +87,53 @@ for iRoi=1:length(roiNames)
     aveEndoAll(:,iRoi) = mean(ehdrEndoAll(:,roiInd)');
 end
 
-ExoEndoC = [aveExoC;aveEndoC];
-ExoEndoI = [aveExoI;aveEndoI];
+%% Contralateral
+all = [aveExoC;aveEndoC];
+
+smartfig('All'); clf; hold on;
+
+bar(all');
+legend('Exo','Endo')
+ylim([-.2 1])
+set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
+axis square
+ylabel('fMRI resp (% chg img intensity)','FontSize', 14);
+title('Cue effect - CONTRALATERAL','FontSize', 18)
+
+%% Ipsilateral
+all = [aveExoI;aveEndoI];
+
+smartfig('All'); clf; hold on;
+
+bar(all');
+legend('Exo','Endo')
+ylim([-.2 1])
+set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
+axis square
+ylabel('fMRI resp (% chg img intensity)','FontSize', 14);
+title('Cue effect - IPSILATERAL','FontSize', 18)
+
+%% Ipsilateral
+Exo = [aveExoI;aveExoC];
+Endo = [aveEndoI;aveEndoC];
+all = [aveExoI;aveEndoI];
+
+smartfig('All'); clf; hold on;
+
+bar(all');
+legend('Exo','Endo')
+ylim([-.2 1])
+set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
+axis square
+ylabel('fMRI resp (% chg img intensity)','FontSize', 14);
+title('Cue effect - IPSILATERAL','FontSize', 18)
+
 
 %% EXO
+keyboard
 smartfig('Exo'); clf; hold on;
 
-bar(mean(aveExoAll));
+bar(aveExoAll');
 ylim([-.2 1])
 set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
 axis square
@@ -119,11 +157,10 @@ all = [mean(aveExoAll);mean(aveEndoAll)];
 smartfig('All'); clf; hold on;
 
 bar(all');
+legend('Exo','Endo')
 ylim([-.2 1])
 set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
 axis square
-
-title('Cue effect','FontSize', 16)
-
-
+ylabel('fMRI resp (% chg img intensity)','FontSize', 14);
+title('Cue effect','FontSize', 18)
 

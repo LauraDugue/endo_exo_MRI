@@ -87,13 +87,52 @@ for iRoi=1:length(roiNames)
     aveEndoAll(:,iRoi) = mean(ehdrEndoAll(:,roiInd)');
 end
 
-ExoEndoC = [aveExoC;aveEndoC];
-ExoEndoI = [aveExoI;aveEndoI];
+%% Contralateral
+all = [aveExoC;aveEndoC];
+
+smartfig('All'); clf; hold on;
+
+bar(all');
+legend('Exo','Endo')
+ylim([-.2 1])
+set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
+axis square
+ylabel('fMRI resp (% chg img intensity)','FontSize', 14);
+title('Cue effect - CONTRALATERAL','FontSize', 18)
+
+%% Ipsilateral
+all = [aveExoI;aveEndoI];
+
+smartfig('All'); clf; hold on;
+
+bar(all');
+legend('Exo','Endo')
+ylim([-.2 1])
+set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
+axis square
+ylabel('fMRI resp (% chg img intensity)','FontSize', 14);
+title('Cue effect - IPSILATERAL','FontSize', 18)
+
+%% Ipsilateral
+Exo = [aveExoI;aveExoC];
+Endo = [aveEndoI;aveEndoC];
+all = [mean(Exo);mean(Endo)];
+
+smartfig('All'); clf; hold on;
+
+bar(all');
+legend('Exo','Endo')
+ylim([-.2 1])
+set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
+axis square
+ylabel('fMRI resp (% chg img intensity)','FontSize', 14);
+title('Cue effect - ALL','FontSize', 18)
 
 %% EXO
 smartfig('Exo'); clf; hold on;
 
-bar(mean(aveExoAll));
+bar(aveExoAll');
+legend('Right','Left')
 ylim([-.2 1])
 set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
 axis square
@@ -104,23 +143,10 @@ title('Exogenous attention','FontSize', 16)
 smartfig('Endo'); clf; hold on;
 
 bar(mean(aveEndoAll));
+legend('Right','Left')
 ylim([-.2 1])
 set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
 axis square
 
 title('Endogenous attention','FontSize', 16)
-
-%% ALL
-
-all = [mean(aveExoAll);mean(aveEndoAll)];
-
-smartfig('All'); clf; hold on;
-
-bar(all');
-legend('Exo','Endo')
-ylim([-.2 1])
-set(gca, 'XTick', 1:14, 'XTickLabel',roiNames, 'tickdir', 'out')
-axis square
-ylabel('fMRI resp (% chg img intensity)','FontSize', 14);
-title('Cue effect','FontSize', 18)
 
