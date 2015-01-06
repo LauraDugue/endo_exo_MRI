@@ -48,7 +48,7 @@ for iRoi = 1:length(fEndo)
         idx = 11;
     elseif strcmp(CI,'correct') && Corb == 1
         idx = 0;
-    elseif strcmp(CI,'correct') && Corb == 1
+    elseif strcmp(CI,'incorrect') && Corb == 1
         idx = 8;
     end
     % first four resps are 'contralateral' for right hemi ROIs
@@ -123,8 +123,8 @@ for iRoi = 1:length(fEndo)
 end
 
 % roiNames = {'mtplus','v1','v2','v3a','v3b','v3','v4','v7','vo1','vo2','ips1','ips2','ips3','ips4'};%
-% roiNames = {'v1','v2','v3a','v3b','v3','v4','vo1','vo2','lo1','lo2'};%
-roiNames = {'v7','ips1','ips2','ips3','ips4'};%
+roiNames = {'v1','v2','v3a','v3b','v3','v4','vo1','vo2','lo1','lo2'};%
+% roiNames = {'v7','ips1','ips2','ips3','ips4'};%
 
 % average over right and left hemipshere betas
 aveExoC=[];aveExoI=[];aveEndoC=[];aveEndoI=[];

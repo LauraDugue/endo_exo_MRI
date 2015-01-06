@@ -17,7 +17,7 @@ end
 getArgs(varargin, [], 'verbose=0');
 if ieNotDefined('scanNum'); scanNum = 3;end
 if ieNotDefined('groupNum'); groupNum = 'Concatenation';end
-if ieNotDefined('locThresh'); locThresh = 0; end
+if ieNotDefined('locThresh'); locThresh = 0.3; end
 if ieNotDefined('locGroup'); locGroup = 'Averages'; end
 if ieNotDefined('locScan'); locScan = 1; end
 
@@ -220,7 +220,7 @@ dGLMCIb = getr2timecourse(residual, nhdrCI, hdrlen, dCI.scm, dCI.tr);
 %% Plot the MRI response over time for all trials
 
 % create a new figure
-smartfig('tSeriesPlot', 'reuse'); clf;
+smartfig('tSeriesPlot'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('All trials (%s), nVox=%i', fixBadChars(roiName, {'_',' '}), sum(goodVox)));
 
@@ -283,7 +283,7 @@ box off
 drawPublishAxis('yTick', [0 yMax/2 yMax]);
 
 %% Plot the MRI response over time -- for both correct and incorrect
-smartfig('tSeriesPlot2', 'reuse'); clf;
+smartfig('tSeriesPlot2'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('All trials - Baseline removed (%s), nVox=%i', fixBadChars(roiName, {'_',' '}), sum(goodVox)));
 
@@ -349,63 +349,63 @@ box off
 drawPublishAxis('yTick', [0 yMax/2 yMax]);
 
 %% Plot the MRI response over time -- ONLY for correct responses
-% smartfig('tSeriesPlot3', 'reuse'); clf;
-% % title  for the figure based on the ROI
-% suptitle(sprintf('Correct trials only - Baseline removed (%s)', fixBadChars(roiName, {'_',' '})));
-% 
-% % plot the responses for target in the LVF
-% subplot(1,4,1); cla
-% yMax = max(ceil(10*(max(dDecCIb.ehdr(1:8,:)')+max(dDecCIb.ehdrste(1:8,:)')))/10);
-% yMin = min(floor(10*(min(dDecCIb.ehdr(1:8,:)')-min(dDecCIb.ehdrste(1:8,:)')))/10);
-% for i=1:4
-%   myerrorbar(dDecCIb.time, dDecCIb.ehdr(i,:), 'yError', dDecCIb.ehdrste(i,:), 'MarkerFaceColor', myColors{i});
-% end
-% ylabel('fMRI resp (% chg img intensity)');
-% xlabel('Time (seconds)');
-% axis square
-% ylim([yMin yMax]);
-% drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25],'titleStr', 'Target in LVF');
-% 
-% % plot the respones for target in the RVF
-% subplot(1,4,2); cla
-% for i=5:8
-%   myerrorbar(dDecCIb.time, dDecCIb.ehdr(i,:), 'yError', dDecCIb.ehdrste(i,:), 'MarkerFaceColor', myColors{i-4});
-% end
-% axis square
-% ylim([yMin yMax]);
-% xlabel('Time (seconds)');
-% 
-% drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RVF');
-% %h_legend = mylegend({'Pre Valid', 'Pre Invalid', 'Post Valid', 'Post Invalid'}, myColors);
-% %set(h_legend, 'box', 'off')
-% 
-% yMax = ceil(10*(max(dGLMCIb.ehdr(1:8)+max(dGLMCIb.ehdrste(1:8)))))/10;
-% yMin = min(0, floor(10*(min(dGLMCIb.ehdr(1:8)-max(dGLMCIb.ehdrste(1:8)))))/10);
-% 
-% subplot(1,4,3); 
-% cla
-% for iBar=1:4
-%     bar([iBar iBar+6], dGLMCIb.ehdr([iBar iBar+4],1), 0.1, 'facecolor', myColors{iBar});
-%     hold on
-%     errorbar([iBar iBar+6], dGLMCIb.ehdr([iBar iBar+4],1), dGLMCIb.ehdrste([iBar iBar+4], 1), 'o', 'color', myColors{iBar});
-% end
-% xaxis([0 11]);
-% axis square;
-% drawPublishAxis('yTick', [0 yMax/2 yMax],'xTickLabel',{'LVF' 'RVF'});
-% 
-% subplot(1,4,4); 
-% cla
-% for iBar=9:11
-%     bar(iBar-8, dGLMCIb.ehdr(iBar,1), 0.25, 'facecolor', myColors{iBar-4});
-%     hold on
-%     errorbar(iBar-8, dGLMCIb.ehdr(iBar,1), dGLMCIb.ehdrste(iBar, 1), 'o', 'color', myColors{iBar-4});
-% end
-% xaxis([0 4]);
-% yaxis([yMin yMax]);
-% axis square;
-% set(gca,'xTick',1:3,'xTickLabel',{'LVF' 'RVF' 'blank'})
-% box off 
-% drawPublishAxis('yTick', [0 yMax/2 yMax]);
+smartfig('tSeriesPlot3'); clf;
+% title  for the figure based on the ROI
+suptitle(sprintf('Correct trials only - Baseline removed (%s)', fixBadChars(roiName, {'_',' '})));
+
+% plot the responses for target in the LVF
+subplot(1,4,1); cla
+yMax = max(ceil(10*(max(dDecCIb.ehdr(1:8,:)')+max(dDecCIb.ehdrste(1:8,:)')))/10);
+yMin = min(floor(10*(min(dDecCIb.ehdr(1:8,:)')-min(dDecCIb.ehdrste(1:8,:)')))/10);
+for i=1:4
+  myerrorbar(dDecCIb.time, dDecCIb.ehdr(i,:), 'yError', dDecCIb.ehdrste(i,:), 'MarkerFaceColor', myColors{i});
+end
+ylabel('fMRI resp (% chg img intensity)');
+xlabel('Time (seconds)');
+axis square
+ylim([yMin yMax]);
+drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25],'titleStr', 'Target in LVF');
+
+% plot the respones for target in the RVF
+subplot(1,4,2); cla
+for i=5:8
+  myerrorbar(dDecCIb.time, dDecCIb.ehdr(i,:), 'yError', dDecCIb.ehdrste(i,:), 'MarkerFaceColor', myColors{i-4});
+end
+axis square
+ylim([yMin yMax]);
+xlabel('Time (seconds)');
+
+drawPublishAxis('yTick',[yMin 0 yMax], 'xTick',[0 25], 'titleStr', 'Target in RVF');
+%h_legend = mylegend({'Pre Valid', 'Pre Invalid', 'Post Valid', 'Post Invalid'}, myColors);
+%set(h_legend, 'box', 'off')
+
+yMax = ceil(10*(max(dGLMCIb.ehdr(1:8)+max(dGLMCIb.ehdrste(1:8)))))/10;
+yMin = min(0, floor(10*(min(dGLMCIb.ehdr(1:8)-max(dGLMCIb.ehdrste(1:8)))))/10);
+
+subplot(1,4,3); 
+cla
+for iBar=1:4
+    bar([iBar iBar+6], dGLMCIb.ehdr([iBar iBar+4],1), 0.1, 'facecolor', myColors{iBar});
+    hold on
+    errorbar([iBar iBar+6], dGLMCIb.ehdr([iBar iBar+4],1), dGLMCIb.ehdrste([iBar iBar+4], 1), 'o', 'color', myColors{iBar});
+end
+xaxis([0 11]);
+axis square;
+drawPublishAxis('yTick', [0 yMax/2 yMax],'xTickLabel',{'LVF' 'RVF'});
+
+subplot(1,4,4); 
+cla
+for iBar=9:11
+    bar(iBar-8, dGLMCIb.ehdr(iBar,1), 0.25, 'facecolor', myColors{iBar-4});
+    hold on
+    errorbar(iBar-8, dGLMCIb.ehdr(iBar,1), dGLMCIb.ehdrste(iBar, 1), 'o', 'color', myColors{iBar-4});
+end
+xaxis([0 4]);
+yaxis([yMin yMax]);
+axis square;
+set(gca,'xTick',1:3,'xTickLabel',{'LVF' 'RVF' 'blank'})
+box off 
+drawPublishAxis('yTick', [0 yMax/2 yMax]);
 
 
 %%

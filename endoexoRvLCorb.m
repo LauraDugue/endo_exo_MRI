@@ -163,7 +163,7 @@ dGLM = getr2timecourse(tSeries, nhdr, hdrlen, d.scm, d.tr);
 %% Plot the MRI response over time for CORRECT trials
 
 % create a new figure
-smartfig('tSeriesPlot1', 'reuse'); clf;
+smartfig('tSeriesPlot1'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('Correct trials (%s), nVox=%i', fixBadChars(roiName, {'_',' '}), sum(goodVox)));
 
@@ -210,7 +210,7 @@ drawPublishAxis('yTick', [yMin 0 yMax],'xTickLabel',{'LVF' 'RVF'});
 %% Plot the MRI response over time for INCORRECT trials
 
 % create a new figure
-smartfig('tSeriesPlot2', 'reuse'); clf;
+smartfig('tSeriesPlot2'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('Incorrect trials (%s), nVox=%i', fixBadChars(roiName, {'_',' '}), sum(goodVox)));
 
@@ -264,7 +264,7 @@ myColors{4}=[255 0 0]/255;
 myColors{5}=[128 128 128]/255;
 
 % create a new figure
-smartfig('tSeriesPlot3', 'reuse'); clf;
+smartfig('tSeriesPlot3'); clf;
 % title  for the figure based on the ROI
 suptitle(sprintf('Remaining trials (%s), nVox=%i', fixBadChars(roiName, {'_',' '}), sum(goodVox)));
 

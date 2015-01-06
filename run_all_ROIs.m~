@@ -22,8 +22,8 @@ v = endoexoRvL2(v, 'r_vTPJ', 'scanNum=2');
 
 %%
 clear all;
-scanNum = 2;
-hemi = {'r'};%'l', 
+scanNum = 2;%1
+hemi = {'r'};%'l',
 roiNames = {'v1', 'v4', 'vo1', 'vo2', 'v2d', 'v3d', 'v3a', 'v3b', 'lo1', 'lo2','v7','ips1','ips2','ips3','ips4'};
 v = newView;
 
