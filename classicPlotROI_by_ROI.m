@@ -24,7 +24,7 @@ yMin = min(0, floor(10*(min(ehdr([1:8 12:19],:))-max(ehdrste([1:8 12:19],:))))/1
 % create a new figure
 smartfig('tSeriesPlot'); clf;
 % title  for the figure based on the ROI
-suptitle(sprintf('%s', fixBadChars(roiName, {'_',' '})));
+suptitle(sprintf('Classic analysis (%s)', fixBadChars(roiName, {'_',' '})));
 
 subplot(1,3,1); 
 cla
@@ -36,6 +36,7 @@ end
 xaxis([0 11]);
 yaxis([yMin yMax]);
 axis square;
+ylabel('fMRI resp (% chg img intensity)');
 drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Correct trials') 
 
 subplot(1,3,2); 
@@ -48,6 +49,7 @@ end
 xaxis([0 11]);
 yaxis([yMin yMax]);
 axis square;
+ylabel('fMRI resp (% chg img intensity)');
 drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Incorrect trials') 
 
 subplot(1,3,3); 
@@ -60,6 +62,7 @@ end
 xaxis([0 9]);
 yaxis([yMin yMax])
 axis square;
+ylabel('fMRI resp (% chg img intensity)');
 drawPublishAxis('xTickLabel',{'Correct','Incorrect'},'titleStr', 'Cue-only LEFT/RIGHT and Blank trials')
 
 

@@ -17,14 +17,14 @@ myColors{6}=[128 128 128]/255;
 myColors{7}=[0 0 0]/255;
 
 % set boudaries
-yMax = ceil(10*(max(ehdr([1:8 12:19],:)+max(ehdrste([1:8 12:19],:)))))/10;
-yMin = min(0, floor(10*(min(ehdr([1:8 12:19],:))-max(ehdrste([1:8 12:19],:))))/10);
+yMax = ceil(10*(max(ehdr(:)+max(ehdrste(:)))))/10;
+yMin = min(0, floor(10*(min(ehdr(:))-max(ehdrste(:))))/10);
 
 %% Plot the MRI response over time
 % create a new figure
 smartfig('tSeriesPlot'); clf;
 % title  for the figure based on the ROI
-suptitle(sprintf('%s', fixBadChars(roiName, {'_',' '})));
+suptitle(sprintf('Corbetta analysis (%s)', fixBadChars(roiName, {'_',' '})));
 
 subplot(1,3,1); 
 cla
@@ -35,8 +35,11 @@ for iBar=1:4
 end
 xaxis([0 11]);
 yaxis([yMin yMax]);
-axis square;
-drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Correct trials') 
+axis square;box off;
+set(gca,'xTickLabel',{'LVF' 'RVF'})
+title('Correct trials')
+ylabel('fMRI resp (% chg img intensity)');
+% drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Correct trials') 
 
 subplot(1,3,2); 
 cla
@@ -45,21 +48,25 @@ for iBar=1:4
     hold on
     errorbar([iBar iBar+6], ehdr([iBar+10 iBar+4+10],1), ehdrste([iBar+10 iBar+10+4], 1), 'o', 'color', myColors{iBar});
 end
-xaxis([0 10]);
+xaxis([0 11]);
 yaxis([yMin yMax]);
-axis square;
-drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Incorrect trials') 
+axis square;box off;
+set(gca,'xTickLabel',{'LVF' 'RVF'})
+title('Incorrect trials')
+ylabel('fMRI resp (% chg img intensity)');
+% drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Incorrect trials') 
 
 subplot(1,3,3); 
 cla
 for iBar=17:19
-    bar(iBar-16, dGLM.ehdr(iBar),  0.4, 'facecolor', myColors{iBar-16})
+    bar(iBar-16, ehdr(iBar),  0.4, 'facecolor', myColors{5})
     hold on
-    errorbar(iBar-16 , dGLM.ehdr(iBar), dGLM.ehdrste(iBar), 'o', 'color', myColors{iBar-16});
+    errorbar(iBar-16 , ehdr(iBar), ehdrste(iBar), 'o', 'color', myColors{5});
 end
 yaxis([yMin yMax])
-axis square;
-box off 
-drawPublishAxis('yTick', [yMin 0 yMax],'xTick', [1:3], 'xTickLabel', {'CueL' 'CueR' 'Blinks'});
+axis square;box off;
+set(gca,'xTick', [1:3],'xTickLabel',{'CueL' 'CueR' 'Blinks'})
+ylabel('fMRI resp (% chg img intensity)');
+% drawPublishAxis('yTick', [yMin 0 yMax],'xTick', [1:3], 'xTickLabel', {'CueL' 'CueR' 'Blinks'});
 
 end

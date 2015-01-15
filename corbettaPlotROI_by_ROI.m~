@@ -17,14 +17,16 @@ myColors{6}=[128 128 128]/255;
 myColors{7}=[0 0 0]/255;
 
 % set boudaries
-yMax = ceil(10*(max(ehdr([1:8 12:19],:)+max(ehdrste([1:8 12:19],:)))))/10;
-yMin = min(0, floor(10*(min(ehdr([1:8 12:19],:))-max(ehdrste([1:8 12:19],:))))/10);
+yMax = ceil(10*(max(ehdr(:)+max(ehdrste(:)))))/10;
+yMin = min(0, floor(10*(min(ehdr(:))-max(ehdrste(:))))/10);
+
+keyboard
 
 %% Plot the MRI response over time
 % create a new figure
 smartfig('tSeriesPlot'); clf;
 % title  for the figure based on the ROI
-suptitle(sprintf('%s', fixBadChars(roiName, {'_',' '})));
+suptitle(sprintf('Corbetta analysis (%s)', fixBadChars(roiName, {'_',' '})));
 
 subplot(1,3,1); 
 cla
@@ -36,63 +38,39 @@ end
 xaxis([0 11]);
 yaxis([yMin yMax]);
 axis square;
-drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Correct trials') 
+set(gca,'xTickLabel',{'LVF' 'RVF'})
+title('Correct trials')
+ylabel('fMRI resp (% chg img intensity)');
+% drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Correct trials') 
 
 subplot(1,3,2); 
 cla
 for iBar=1:4
-    bar([iBar iBar+6], ehdr([iBar+11 iBar+4+11],1), 0.1, 'facecolor', myColors{iBar});
+    bar([iBar iBar+6], ehdr([iBar+10 iBar+4+10],1), 0.1, 'facecolor', myColors{iBar});
     hold on
-    errorbar([iBar iBar+6], ehdr([iBar+11 iBar+4+11],1), ehdrste([iBar+11 iBar+11+4], 1), 'o', 'color', myColors{iBar});
+    errorbar([iBar iBar+6], ehdr([iBar+10 iBar+4+10],1), ehdrste([iBar+10 iBar+10+4], 1), 'o', 'color', myColors{iBar});
 end
 xaxis([0 11]);
 yaxis([yMin yMax]);
 axis square;
-drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Incorrect trials') 
+set(gca,'xTickLabel',{'LVF' 'RVF'})
+title('Incorrect trials')
+ylabel('fMRI resp (% chg img intensity)');
+% drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Incorrect trials') 
 
 subplot(1,3,3); 
-cla
-for iBar=9:11
-    bar([iBar-8 iBar-8+5], ehdr([iBar iBar+3],1), 0.15, 'facecolor', myColors{5});
-    hold on
-    errorbar([iBar-8 iBar-8+5], ehdr([iBar iBar+3],1), ehdrste([iBar iBar+3], 1), 'o', 'color', myColors{5});
-end
-xaxis([0 9]);
-yaxis([yMin yMax])
-axis square;
-drawPublishAxis('xTickLabel',{'Correct','Incorrect'},'titleStr', 'Cue-only LEFT/RIGHT and Blinks')
-
-% - GLM - %
-yMax = ceil(10*(max(dGLM.ehdr(:)+max(dGLM.ehdrste(:)))))/10;
-yMin = min(0, floor(10*(min(dGLM.ehdr(:)-max(dGLM.ehdrste(:)))))/10);
-
-subplot(1,3,3); 
-cla
-for iBar=9:12
-    bar([iBar-8 iBar+6-8], dGLM.ehdr([iBar iBar+4],1), 0.1, 'facecolor', myColors{iBar-8});
-    hold on
-    errorbar([iBar-8 iBar+6-8], dGLM.ehdr([iBar iBar+4],1), dGLM.ehdrste([iBar iBar+4], 1), 'o', 'color', myColors{iBar-8});
-end
-xaxis([0 11]);
-yaxis([yMin yMax]);
-axis square;
-box off 
-drawPublishAxis('yTick', [yMin 0 yMax],'xTickLabel',{'LVF' 'RVF'});
-
-% - GLM - %
-subplot(2,1,2); 
-yMax = ceil(10*(max(dGLM.ehdr(17:19)+max(dGLM.ehdrste(17:19)))))/10;
-yMin = min(0, floor(10*(min(dGLM.ehdr(17:19)-max(dGLM.ehdrste(17:19)))))/10);
 cla
 for iBar=17:19
-    bar(iBar-16, dGLM.ehdr(iBar),  0.4, 'facecolor', myColors{iBar-16})
+    bar(iBar-16, ehdr(iBar),  0.4, 'facecolor', myColors{iBar-16})
     hold on
-    errorbar(iBar-16 , dGLM.ehdr(iBar), dGLM.ehdrste(iBar), 'o', 'color', myColors{iBar-16});
+    errorbar(iBar-16 , ehdr(iBar), ehdrste(iBar), 'o', 'color', myColors{5});
 end
-ylim([yMin yMax])
+yaxis([yMin yMax])
 axis square;
 box off 
+set(gca,'xTickLabel',{'LVF' 'RVF'})
+title('Incorrect trials')
+ylabel('fMRI resp (% chg img intensity)');
 drawPublishAxis('yTick', [yMin 0 yMax],'xTick', [1:3], 'xTickLabel', {'CueL' 'CueR' 'Blinks'});
-
 
 end

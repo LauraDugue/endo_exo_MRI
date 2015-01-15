@@ -5,7 +5,7 @@
 %       date: 01/17/15
 %    purpose: get ehdr and ehdrste for each roi
 %
-function [v,ehdr,ehdrste] = dnoiseEndoExo(v, roiName, groupNum, varargin)
+function [v,ehdr,ehdrste] = dnoiseEndoExo(v, whichAnal, roiName, groupNum, varargin)
 
 % check arguments
 if ~any(nargin == [2:10])
@@ -22,7 +22,7 @@ if ieNotDefined('locGroup'); locGroup = 'Averages'; end
 if ieNotDefined('locScan'); locScan = 1; end
 
 % load the beta weights
-rois = loadROIdnoise(v, roiName, scanNum, groupNum);
+rois = loadROIdnoise(v, whichAnal, roiName, scanNum, groupNum);
 
 % load the localizer corAnal Roi-by-Roi
 localizer = loadROIcoranalMatching(v, roiName, locScan, locGroup, scanNum, groupNum);

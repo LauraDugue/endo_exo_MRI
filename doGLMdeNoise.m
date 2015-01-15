@@ -103,17 +103,39 @@ end
 
 designAllRuns = zeros(sum(runLength), nCond);
 
-% first loop over conditions
-for iCond = 1:length(correctIncorrect)
-    % correct trials
-    whichVols = stimvol{iCond}(correctIncorrect{iCond}==1);
-    designAllRuns(whichVols,iCond) = 1;
-    % incorrect trials
-    whichVols = stimvol{iCond}(correctIncorrect{iCond}==-1);
-    designAllRuns(whichVols,iCond+length(correctIncorrect)) = 1;    
-    % blinks
-    whichVols = stimvol{iCond}(correctIncorrect{iCond}==0);
-    designAllRuns(whichVols,end) = 1;    
+if strcmp(whichAnal,'classic')
+    % first loop over conditions
+    for iCond = 1:length(correctIncorrect)
+        % correct trials
+        whichVols = stimvol{iCond}(correctIncorrect{iCond}==1);
+        designAllRuns(whichVols,iCond) = 1;
+        % incorrect trials
+        whichVols = stimvol{iCond}(correctIncorrect{iCond}==-1);
+        designAllRuns(whichVols,iCond+length(correctIncorrect)) = 1;
+        % blinks
+        whichVols = stimvol{iCond}(correctIncorrect{iCond}==0);
+        designAllRuns(whichVols,end) = 1;
+    end
+end
+
+if strcmp(whichAnal,'corbetta')
+    % get stimvols for correct and incorrect trials
+    correctStimvol{1,8} = [];
+    incorrectStimvol{1,8} = [];
+    blinkStimvol = [];
+    for iCond = 1:8
+        % correct trials
+        correctStimvol{iCond} = stimvol{iCond}(correctIncorrect{iCond}==1);
+        % incorrect trials
+        incorrectStimvol{iCond} = stimvol{iCond}(correctIncorrect{iCond}==-1);
+        % blinks
+        blinkStimvol = cat(2, blinkStimvol, stimvol{iCond}(correctIncorrect{iCond}==0));
+    end
+    % correct/incorrect stimvols
+    newstimvol = [correctStimvol incorrectStimvol stimvol{9:end} blinkStimvol];
+    for iCond = 1:length(newstimvol)
+        designAllRuns(newstimvol{iCond},iCond) = 1;
+    end
 end
 
 % now split by run
@@ -139,19 +161,20 @@ end
 disppercent(inf);
 
 %% run GLM dnoise
-results = GLMdnoisedata(design, data, 1, 1.75, [], [], [], []); 
-save(['glmoutput_exo_' obs '.mat'], 'results','-v7.3')
+results = GLMdenoisedata(design, data, 1, 1.75, [], [], [], []); 
+save(['glmoutput_exo_' whichAnal '_' obs '.mat'], 'results','-v7.3')
 
 % parse the output
 scanNum = viewGet(v, 'curscan');
 groupNum = viewGet(v, 'curgroup');
 
+keyboard
 d.ehdr = results.modelmd{2};
 d.ehdrste = results.modelse{2};
 d.stimvol = design;
-[v,dnoiseAnal] = mrDispOverlay(results.R2, scanNum, groupNum, v, 'saveName=dnoiseAnal', 'overlayNames', {'r2'}, 'analName', 'glmdnoise', 'd', d);
+[v,dnoiseAnal] = mrDispOverlay(results.R2, scanNum, groupNum, v, ['saveName=dnoiseAnal_' whichAnal], 'overlayNames', {'r2'}, 'analName', 'glmdnoise', 'd', d);
 
-mrSetPref('overwritePolicy', 'Merge');
-saveAnalysis(v, 'dnoiseAnal');
+% mrSetPref('overwritePolicy', 'Merge');
+% saveAnalysis(v, ['dnoiseAnal_' whichAnal]);
 
 end

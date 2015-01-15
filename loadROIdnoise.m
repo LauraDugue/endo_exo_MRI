@@ -5,7 +5,7 @@
 %       date: 01/13/15
 %    purpose: 
 %
-function rois = loadROIdnoise(view, roiname, scanList, groupNum, varagin);
+function rois = loadROIdnoise(view, whichAnal, roiname, scanList, groupNum, varagin);
 
 rois = {};
 
@@ -45,7 +45,7 @@ end
 roiname = cellArray(roiname);
 
 % load the analysis
-view = loadAnalysis(view, 'mrDispOverlayAnal/dnoiseAnal.mat');
+view = loadAnalysis(view, ['glmdnoise/dnoiseAnal_' whichAnal '.mat']);
 
 % extract the params
 d = viewGet(view, 'd');
