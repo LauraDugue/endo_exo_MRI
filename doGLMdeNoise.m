@@ -1,56 +1,120 @@
+% doGLMdeNoise.m
+%
+%      usage: doGLMdeNoise(v, varargin)
+%         by: eli & laura
+%       date: 01/17/15
+%    purpose: 
+%
+function v = doGLMdeNoise(v,obs,attCond,whichAnal)
 
-
-% v = newView;
-v = viewSet(v, 'curGroup', 'exo');
-nScans = viewGet(v, 'nscans');
-% for iScan = 1:nScans
-%     [v params] = concatTSeries(v, [], 'justGetParams=1', 'defaultParams=1', sprintf('scanList=%i',iScan));
-%     params.percentSignal = 0;
-%     params.filterType = 'none';
-%     params.warpInterpMethod = 'linear';
-%     params.warpBaseScan = 1;
-%     params.newGroupName = sprintf('w-%s', params.groupName');
-%     concatTSeries(v, params);
-% end
-
-
-%% -------------------------------------------------
+% set parameters
 runLength = [];
-v = viewSet(v, 'curGroup', 'w-exo');
+nScans = viewGet(v, 'nscans');
+v = viewSet(v, 'curGroup', ['w-' attCond]);
+
 for iScan = 1:nScans
     runLength = cat(1, runLength, viewGet(v, 'nFrames', iScan));
 end
 
-nCond = 23; % 11 correct, 11 incorrect, blinks
-%nCond = 11; % 11 correct, 11 incorrect, blinks
-
-% load the stim vols
-% stimvol = load('Anal/endostimvol.mat');
-% load('Anal/correctIncorrect_endo_blinks.mat');
-stimvol = load('Anal/exostimvol.mat');
-load('Anal/correctIncorrect_exo_blinks.mat');
+% get the stimvol
+if strcmp(whichAnal,'classic')
+    nCond = 23; % 11 correct, 11 incorrect, blinks
+    if strcmp(attCond,'exo')
+        load('Anal/correctIncorrect_exo_blinks');
+        if exist('Anal/exostimvol.mat', 'file')
+            load('Anal/exostimvol.mat');
+        else
+            [stimvol, stimNames, var] = getStimvol(v, ...
+                {{'CueCond=[1 2 3 4]','PrePost=1','targLoc=1'},...
+                {'CueCond=[5 6 7 8]','PrePost=1','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=9','cueLoc=1'}, ...
+                {'CueCond=9','cueLoc=2'}, ...
+                {'CueCond=10'}});
+            save Anal/exostimvol.mat stimvol stimNames var
+        end
+    elseif strcmp(attCond,'endo')
+        load('Anal/correctIncorrect_endo_blinks');
+        if exist('Anal/endostimvol.mat', 'file')
+            load('Anal/endostimvol.mat');
+        else
+            [stimvol, stimNames, var] = getStimvol(v, ...
+                {{'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=1'},...
+                {'CueCond=[7 8]','PrePost=1','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[7 8]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[7 8]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=[7 8]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=9','cueLoc=1'}, ...
+                {'CueCond=9','cueLoc=2'}, ...
+                {'CueCond=10'}});
+            save Anal/endostimvol.mat stimvol stimNames var
+        end
+    end
+elseif strcmp(whichAnal,'corbetta')
+    nCond = 19; % 8 target_correct, 8 target_incorrect, 2 cue, blinks
+    if strcmp(attCond,'exo')
+        load('Anal/correctIncorrect_exo_blinks');
+        if exist('Anal/exostimvolCorb.mat', 'file')
+            load('Anal/exostimvolCorb.mat');
+        else
+            [stimvol, stimNames, var] = getStimvol(v, ...
+                {{'CueCond=[1 2 3 4]','PrePost=1','targLoc=1'},...
+                {'CueCond=[5 6 7 8]','PrePost=1','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=1:9','cueLoc=1'}, ...
+                {'CueCond=1:9','cueLoc=2'}, ...
+                });
+            save Anal/exostimvolCorb.mat stimvol stimNames var
+        end
+    elseif strcmp(attCond,'endo')
+        load('Anal/correctIncorrect_endo_blinks');
+        if exist('Anal/endostimvolCorb.mat', 'file')
+            load('Anal/endostimvolCorb.mat');
+        else
+            [stimvol, stimNames, var] = getStimvol(v, ...
+                {{'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=1'},...
+                {'CueCond=[7 8]','PrePost=1','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[7 8]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[7 8]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=[7 8]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=1:9','cueLoc=1'}, ...
+                {'CueCond=1:9','cueLoc=2'}, ...
+                });
+            save Anal/endostimvolCorb.mat stimvol stimNames var
+        end
+    end
+end
 
 designAllRuns = zeros(sum(runLength), nCond);
 
 % first loop over conditions
 for iCond = 1:length(correctIncorrect)
     % correct trials
-    whichVols = stimvol.stimvol{iCond}(correctIncorrect{iCond}==1);
+    whichVols = stimvol{iCond}(correctIncorrect{iCond}==1);
     designAllRuns(whichVols,iCond) = 1;
     % incorrect trials
-    whichVols = stimvol.stimvol{iCond}(correctIncorrect{iCond}==-1);
+    whichVols = stimvol{iCond}(correctIncorrect{iCond}==-1);
     designAllRuns(whichVols,iCond+length(correctIncorrect)) = 1;    
     % blinks
-    whichVols = stimvol.stimvol{iCond}(correctIncorrect{iCond}==0);
+    whichVols = stimvol{iCond}(correctIncorrect{iCond}==0);
     designAllRuns(whichVols,end) = 1;    
 end
-
-% for iCond = 1:length(correctIncorrect)
-%     correct trials
-%     whichVols = stimvol.stimvol{iCond};
-%     designAllRuns(whichVols,iCond) = 1;
-% end
-
 
 % now split by run
 runStartTimes = 1;
@@ -66,7 +130,6 @@ for iScan = 1:nScans
 end
 
 %% load the data
-% whichSlice = [2 27];
 whichSlice = [];
 disppercent(-inf, 'Loading data');
 for iScan = 1:nScans
@@ -76,9 +139,8 @@ end
 disppercent(inf);
 
 %% run GLM dnoise
-results = GLMdnoisedata(design, data, 1, 1.75, [], [], [], []);
-   
-save('glmoutput_exo_nms.mat', 'results','-v7.3')
+results = GLMdnoisedata(design, data, 1, 1.75, [], [], [], []); 
+save(['glmoutput_exo_' obs '.mat'], 'results','-v7.3')
 
 % parse the output
 scanNum = viewGet(v, 'curscan');
@@ -87,15 +149,9 @@ groupNum = viewGet(v, 'curgroup');
 d.ehdr = results.modelmd{2};
 d.ehdrste = results.modelse{2};
 d.stimvol = design;
-[v dnoiseAnal] = mrDispOverlay(results.R2, scanNum, groupNum, v, 'saveName=dnoiseAnal', 'overlayNames', {'r2'}, 'analName', 'glmdnoise', 'd', d);
+[v,dnoiseAnal] = mrDispOverlay(results.R2, scanNum, groupNum, v, 'saveName=dnoiseAnal', 'overlayNames', {'r2'}, 'analName', 'glmdnoise', 'd', d);
 
 mrSetPref('overwritePolicy', 'Merge');
 saveAnalysis(v, 'dnoiseAnal');
 
-    
-
-    
-
-    
-    
-    
+end

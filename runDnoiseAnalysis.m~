@@ -33,23 +33,14 @@ end
 %% average across voxels within each ROI
 [v,ehdr,ehdrste] = dnoiseEndoExo(v, roiName, ['w-' cond]);
 
-%% Plot Roi-by-Roi classic analysis
+%% Plot Roi-by-Roi
 plotROI = 'r_v1';
 m_ehdr = ehdr{strcmp(roiName,plotROI)};
 m_ehdr = m_ehdr';
 ste_ehdr = ehdrste{strcmp(roiName,plotROI)};
-ste_ehdr = ste_ehdr';
-
-classicPlotROI_by_ROI(m_ehdr, ste_ehdr, plotROI)
-
-%% Plot Roi-by-Roi corbetta analysis
-plotROI = 'r_v1';
-m_ehdr = ehdr{strcmp(roiName,plotROI)};
 m_ehdr = m_ehdr';
-ste_ehdr = ehdrste{strcmp(roiName,plotROI)};
-ste_ehdr = ste_ehdr';
 
-corbettaPlotROI_by_ROI(m_ehdr, ste_ehdr, plotROI)
+plotROI_by_ROI(m_ehdr, ste_ehdr, plotROI)
 
 %% Plot indexes
 

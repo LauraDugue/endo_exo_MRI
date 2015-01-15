@@ -3,9 +3,9 @@
 %      usage: dnoiseEndoExo(v, roiName, varargin)
 %         by: eli & laura
 %       date: 01/17/15
-%    purpose: 
+%    purpose: get ehdr and ehdrste for each roi
 %
-function v = dnoiseEndoExo(v, roiName, groupNum)
+function [v,ehdr,ehdrste] = dnoiseEndoExo(v, roiName, groupNum, varargin)
 
 % check arguments
 if ~any(nargin == [2:10])
@@ -24,16 +24,18 @@ if ieNotDefined('locScan'); locScan = 1; end
 % load the beta weights
 rois = loadROIdnoise(v, roiName, scanNum, groupNum);
 
-% load the localizer corAnal
+% load the localizer corAnal Roi-by-Roi
 localizer = loadROIcoranalMatching(v, roiName, locScan, locGroup, scanNum, groupNum);
-goodVox = localizer{1}.co > locThresh & localizer{1}.ph < pi & ~isnan(mean(rois{1}.ehdr,2));
+for iRoi = 1:length(rois)
+    goodVox{iRoi} = localizer{iRoi}.co > locThresh & localizer{iRoi}.ph < pi & ~isnan(mean(rois{iRoi}.ehdr,2));
+end
 
 % average across voxels in each ROI
 for iRoi = 1:length(rois)
-    ehdr{iRoi} = mean(rois{iRoi}.ehdr(goodVox,:));
+    ehdr{iRoi} = mean(rois{iRoi}.ehdr(goodVox{iRoi},:));
+    ehdrste{iRoi} = mean(rois{iRoi}.ehdrste(goodVox{iRoi},:));
 end
 
-
-
+end
 
 
