@@ -1,6 +1,6 @@
 % runDnoiseAnalysis.m
 %
-%      usage: runDnoiseAnalysis
+%      usage: runDnoiseAnalysis(v, roiName, varargin)
 %         by: eli & laura
 %       date: 01/17/15
 
@@ -54,3 +54,10 @@ if strcmp(whichAnal,'corbetta')
     
     corbettaPlotROI_by_ROI(m_ehdr, ste_ehdr, plotROI)
 end
+%% Plot indexes
+
+indexPlot(m_ehdr, ste_ehdr, whichAnal)
+
+
+
+

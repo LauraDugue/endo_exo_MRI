@@ -1,6 +1,6 @@
 % classicPlotROI_by_ROI.m
 %
-%      usage: classicPlotROI_by_ROI(v, roiName, varargin)
+%      usage: classicPlotROI_by_ROI(ehdr, ehdrste, roiName)
 %         by: eli & laura
 %       date: 01/17/15
 %    purpose: 
