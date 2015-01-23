@@ -49,7 +49,7 @@ end
 xaxis([0 11]);
 yaxis([yMin yMax]);
 axis square;
-ylabel('fMRI resp (% chg img intensity)');
+% ylabel('fMRI resp (% chg img intensity)');
 drawPublishAxis('xTickLabel',{'LVF' 'RVF'},'titleStr', 'Incorrect trials') 
 
 subplot(1,3,3); 
@@ -62,7 +62,7 @@ end
 xaxis([0 9]);
 yaxis([yMin yMax])
 axis square;
-ylabel('fMRI resp (% chg img intensity)');
+% ylabel('fMRI resp (% chg img intensity)');
 drawPublishAxis('xTickLabel',{'Correct','Incorrect'},'titleStr', 'Cue-only LEFT/RIGHT and Blank trials')
 
 

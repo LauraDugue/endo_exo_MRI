@@ -153,6 +153,7 @@ end
 
 %% load the data
 whichSlice = [];
+whichSlice = [10 12];
 disppercent(-inf, 'Loading data');
 for iScan = 1:nScans
     data{iScan} = loadTSeries(v, iScan, whichSlice, [], [], [], 'single');
@@ -162,13 +163,13 @@ disppercent(inf);
 
 %% run GLM dnoise
 results = GLMdenoisedata(design, data, 1, 1.75, [], [], [], []); 
+% results = GLMdenoisedata(design, data, 1, 1.75, 'fir', [], [], []); 
 save(['glmoutput_exo_' whichAnal '_' obs '.mat'], 'results','-v7.3')
 
 % parse the output
 scanNum = viewGet(v, 'curscan');
 groupNum = viewGet(v, 'curgroup');
 
-keyboard
 d.ehdr = results.modelmd{2};
 d.ehdrste = results.modelse{2};
 d.stimvol = design;
