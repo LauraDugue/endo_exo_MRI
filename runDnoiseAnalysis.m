@@ -28,7 +28,12 @@ end
 
 %% run GLM denoise
 if doGLM
-    v = doGLMdeNoise(v,obs,cond,whichAnal);
+    if strcmp(cond,'exo')
+        scanNum = 1;% scanNum=1 for exo and scanNum=2 for endo
+    elseif strcmp(cond,'endo')
+        scanNum = 2;% scanNum=1 for exo and scanNum=2 for endo
+    end
+    v = doGLMdeNoise(v,obs,cond,whichAnal,scanNum);
 end
 
 %% average across voxels within each ROI
