@@ -15,9 +15,9 @@ end
 
 % get the input arguemnts
 getArgs(varargin, [], 'verbose=0');
-if ieNotDefined('scanNum'); scanNum = 3;end
+if ieNotDefined('scanNum'); scanNum = 1;end
 if ieNotDefined('groupNum'); groupNum = 'Concatenation';end
-if ieNotDefined('locThresh'); locThresh = 0.3; end
+if ieNotDefined('locThresh'); locThresh = 0.4; end
 if ieNotDefined('locGroup'); locGroup = 'Averages'; end
 if ieNotDefined('locScan'); locScan = 1; end
 
@@ -113,8 +113,10 @@ end
 % correct/incorrect stimvols
 stimvol = [correctStimvol incorrectStimvol stimvol{9:end} blinkStimvol];
 
+foo = stimvol(1:6);
+foo = cat(2, stimvol{1}, stimvol{2}, stimvol{3}, stimvol{4}, stimvol{5}, stimvol{6});
 % make stimulus convolution matrix 
-scm = makescm(v, round(24/frameperiod), 1, stimvol);
+scm = makescm(v, round(24/frameperiod), 1, stimvol(1:7));
 
 %scm = makescm(d, round(24/frameperiod), 0, stimvol);
 

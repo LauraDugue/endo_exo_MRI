@@ -3,7 +3,7 @@
 %      usage: doGLMdeNoise(v, varargin)
 %         by: eli & laura
 %       date: 01/17/15
-%    purpose: 
+%    purpose:
 %
 function v = doGLMdeNoise(v,obs,attCond,whichAnal,scanNum)
 
@@ -17,84 +17,81 @@ groupName = viewGet(v, 'groupName');
 frameperiod = viewGet(v, 'frameperiod');
 
 % get the stimvol
-if strcmp(whichAnal,'classic')
+if strcmp(whichAnal,'visualCortex')
     nCond = 23; % 11 correct, 11 incorrect, blinks
     if strcmp(attCond,'exo')
-        load('Anal/correctIncorrect_exo_blinks');
-        if exist('Anal/exostimvol.mat', 'file')
-            load('Anal/exostimvol.mat');
+        load(['Anal/CIValidInvalid_' obs '_exo']);
+        if exist('Anal/exostimvolVisual.mat', 'file')
+            load('Anal/exostimvolVisual.mat');
         else
             [stimvol, stimNames, var] = getStimvol(v, ...
-                {{'CueCond=[1 2 3 4]','PrePost=1','targLoc=1'},...
-                {'CueCond=[5 6 7 8]','PrePost=1','targLoc=1'}, ...
-                {'CueCond=[1 2 3 4]','PrePost=2','targLoc=1'}, ...
-                {'CueCond=[5 6 7 8]','PrePost=2','targLoc=1'}, ...
-                {'CueCond=[1 2 3 4]','PrePost=1','targLoc=2'}, ...
-                {'CueCond=[5 6 7 8]','PrePost=1','targLoc=2'}, ...
-                {'CueCond=[1 2 3 4]','PrePost=2','targLoc=2'}, ...
-                {'CueCond=[5 6 7 8]','PrePost=2','targLoc=2'}, ...
-                {'CueCond=9','cueLoc=1'}, ...
-                {'CueCond=9','cueLoc=2'}, ...
-                {'CueCond=10'}});
-            save Anal/exostimvol.mat stimvol stimNames var
+                {{'CueCond=[1:8]','cueLoc=1','PrePost=1'},...% Cue-Left-Pre
+                {'CueCond=[1:8]','cueLoc=1','PrePost=2'},...%  Cue-Left-Post
+                {'CueCond=[1:8]','cueLoc=2','PrePost=1'},...%  Cue-Right-Pre
+                {'CueCond=[1:8]','cueLoc=2','PrePost=2'},...%  Cue-Right-Post
+                {'CueCond=9','cueLoc=1'},...%  CueOnly-Left
+                {'CueCond=9','cueLoc=2'},...%  CueOnly-Right
+                {'CueCond=10'},...%            Blank
+                %{'CueCond=[1:4]'},...%         RespCue-Valid
+                %{'CueCond=[5:8]'}...%          RespCue-Invalid
+                });
+            save Anal/exostimvolVisual.mat stimvol stimNames var
         end
     elseif strcmp(attCond,'endo')
-        load('Anal/correctIncorrect_endo_blinks');
-        if exist('Anal/endostimvol.mat', 'file')
-            load('Anal/endostimvol.mat');
+        load(['Anal/CIValidInvalid_' obs '_endo']);
+        if exist('Anal/endostimvolVisual.mat', 'file')
+            load('Anal/endostimvolVisual.mat');
         else
             [stimvol, stimNames, var] = getStimvol(v, ...
-                {{'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=1'},...
-                {'CueCond=[7 8]','PrePost=1','targLoc=1'}, ...
-                {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=1'}, ...
-                {'CueCond=[7 8]','PrePost=2','targLoc=1'}, ...
-                {'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=2'}, ...
-                {'CueCond=[7 8]','PrePost=1','targLoc=2'}, ...
-                {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=2'}, ...
-                {'CueCond=[7 8]','PrePost=2','targLoc=2'}, ...
-                {'CueCond=9','cueLoc=1'}, ...
-                {'CueCond=9','cueLoc=2'}, ...
-                {'CueCond=10'}});
-            save Anal/endostimvol.mat stimvol stimNames var
+                {{'CueCond=[1:8]','cueLoc=1','PrePost=1'},...% Cue-Left-Pre
+                {'CueCond=[1:8]','cueLoc=1','PrePost=2'},...%  Cue-Left-Post
+                {'CueCond=[1:8]','cueLoc=2','PrePost=1'},...%  Cue-Right-Pre
+                {'CueCond=[1:8]','cueLoc=2','PrePost=2'},...%  Cue-Right-Post
+                {'CueCond=9','cueLoc=1'},...%  CueOnly-Left
+                {'CueCond=9','cueLoc=2'},...%  CueOnly-Right
+                {'CueCond=10'},...%            Blank
+                %{'CueCond=[1:4]'},...%         RespCue-Valid
+                %{'CueCond=[5:8]'}...%          RespCue-Invalid
+                });
+            save Anal/endostimvolVisual.mat stimvol stimNames var
         end
     end
-elseif strcmp(whichAnal,'corbetta')
-    nCond = 12;
+elseif strcmp(whichAnal,'TPJ')
     if strcmp(attCond,'exo')
         load(['Anal/CIValidInvalid_' obs '_exo']);
-        if exist('Anal/exostimvolCorb.mat', 'file')
-            load('Anal/exostimvolCorb.mat');
+        if exist('Anal/exostimvolTPJ.mat', 'file')
+            load('Anal/exostimvolTPJ.mat');
         else
             [stimvol, stimNames, var] = getStimvol(v, ...
-                {{'cueLoc=1','PrePost=1'},...% Cue-Left-Pre
-                {'cueLoc=1','PrePost=2'},...%  Cue-Left-Post
-                {'cueLoc=2','PrePost=1'},...%  Cue-Right-Pre
-                {'cueLoc=2','PrePost=2'},...%  Cue-Right-Post
+                {...%{'CueCond=[1:8]','cueLoc=1','PrePost=1'},...% Cue-Left-Pre
+                %{'CueCond=[1:8]','cueLoc=1','PrePost=2'},...%  Cue-Left-Post
+                %{'CueCond=[1:8]','cueLoc=2','PrePost=1'},...%  Cue-Right-Pre
+                %{'CueCond=[1:8]','cueLoc=2','PrePost=2'},...%  Cue-Right-Post
                 {'CueCond=9','cueLoc=1'},...%  CueOnly-Left
                 {'CueCond=9','cueLoc=2'},...%  CueOnly-Right
                 {'CueCond=10'},...%            Blank
                 {'CueCond=[1:4]'},...%         RespCue-Valid
                 {'CueCond=[5:8]'}...%          RespCue-Invalid
                 });
-            save Anal/exostimvolCorb.mat stimvol stimNames var
+            save Anal/exostimvolTPJ.mat stimvol stimNames var
         end
     elseif strcmp(attCond,'endo')
         load(['Anal/CIValidInvalid_' obs '_endo']);
-        if exist('Anal/endostimvolCorb.mat', 'file')
-            load('Anal/endostimvolCorb.mat');
+        if exist('Anal/endostimvolTPJ.mat', 'file')
+            load('Anal/endostimvolTPJ.mat');
         else
             [stimvol, stimNames, var] = getStimvol(v, ...
-                {{'cueLoc=1','PrePost=1'},...% Cue-Left-Pre
-                {'cueLoc=1','PrePost=2'},...%  Cue-Left-Post
-                {'cueLoc=2','PrePost=1'},...%  Cue-Right-Pre
-                {'cueLoc=2','PrePost=2'},...%  Cue-Right-Post
+                {...%{'CueCond=[1:8]','cueLoc=1','PrePost=1'},...% Cue-Left-Pre
+                %{'CueCond=[1:8]','cueLoc=1','PrePost=2'},...%  Cue-Left-Post
+                %{'CueCond=[1:8]','cueLoc=2','PrePost=1'},...%  Cue-Right-Pre
+                %{'CueCond=[1:8]','cueLoc=2','PrePost=2'},...%  Cue-Right-Post
                 {'CueCond=9','cueLoc=1'},...%  CueOnly-Left
                 {'CueCond=9','cueLoc=2'},...%  CueOnly-Right
                 {'CueCond=10'},...%            Blank
                 {'CueCond=[1:6]'},...%         RespCue-Valid
                 {'CueCond=[7 8]'}...%          RespCue-Invalid
                 });
-            save Anal/endostimvolCorb.mat stimvol stimNames var
+            save Anal/endostimvolTPJ.mat stimvol stimNames var
         end
     end
 end
@@ -107,38 +104,64 @@ for iScan = 1:nScans
     runLength = cat(1, runLength, viewGet(v, 'nFrames', iScan));
 end
 
-designAllRuns = zeros(sum(runLength), nCond);
+if strcmp(whichAnal,'visualCortex')
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % get stimvols for correct and incorrect trials
+    Blink{1,length(stimvol)} = [];
+    noBlink{1,length(stimvol)} = [];
+    
+    for iCond = 1:4 %1:length(stimvol)
+        Blink{iCond} = stimvol{iCond}(CIValidInvalid{iCond}==0);
+        % the noBlink stimvols are what we will use in the design matrix
+        noBlink{iCond} = stimvol{iCond}(CIValidInvalid{iCond}~=0);
+    end
 
-if strcmp(whichAnal,'classic')
-    % first loop over conditions
-    for iCond = 1:length(correctIncorrect)
-        % correct trials
-        whichVols = stimvol{iCond}(correctIncorrect{iCond}==1);
-        designAllRuns(whichVols,iCond) = 1;
-        % incorrect trials
-        whichVols = stimvol{iCond}(correctIncorrect{iCond}==-1);
-        designAllRuns(whichVols,iCond+length(correctIncorrect)) = 1;
-        % blinks
-        whichVols = stimvol{iCond}(correctIncorrect{iCond}==0);
-        designAllRuns(whichVols,end) = 1;
+    % fill in the trials for which we do not care about blinks
+    for iCond=5:7
+        noBlink{iCond}=stimvol{iCond};
+    end
+    
+    blinkStimvol = sort([Blink{1}';Blink{2}';Blink{3}';Blink{4}'])';
+    
+    % correct/incorrect stimvols
+    newstimvol = [noBlink blinkStimvol];% 
+    designAllRuns = zeros(sum(runLength), length(newstimvol));
+
+    for iCond = 1:length(newstimvol)
+        designAllRuns(newstimvol{iCond},iCond) = 1;
     end
 end
-
-if strcmp(whichAnal,'corbetta')
+if strcmp(whichAnal,'TPJ')
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % get stimvols for correct and incorrect trials
+    Blink{1,length(stimvol)} = [];
+    noBlink{1,length(stimvol)} = [];
+    for iCond = 4:5 %1:length(stimvol)
+        Blink{iCond} = stimvol{iCond}(CIValidInvalid{iCond+4}==0);
+        % the noBlink stimvols are what we will use in the design matrix
+        noBlink{iCond} = stimvol{iCond}(CIValidInvalid{iCond+4}~=0);
+    end
+
+    % fill in the trials for which we do not care about blinks
+    for iCond=1:3
+        noBlink{iCond}=stimvol{iCond};
+    end
+
     correctStimvol{1,2} = [];
     incorrectStimvol{1,2} = [];
-    blinkStimvol = [];
-    for iCond = 1:2
+    for iCond = 8:9
         % correct trials
-        correctStimvol{iCond} = stimvol{iCond+7}(CIValidInvalid{iCond}==1);
+        correctStimvol{iCond-7} = stimvol{iCond-4}(CIValidInvalid{iCond}==1);
         % incorrect trials
-        incorrectStimvol{iCond} = stimvol{iCond+7}(CIValidInvalid{iCond}==-1);
-        % blinks
-        blinkStimvol = cat(2, blinkStimvol, stimvol{iCond+7}(CIValidInvalid{iCond}==0));
+        incorrectStimvol{iCond-7} = stimvol{iCond-4}(CIValidInvalid{iCond}==-1);
     end
+    
+    blinkStimvol = sort([Blink{4}';Blink{5}'])';
+    
     % correct/incorrect stimvols
-    newstimvol = [stimvol{1:7} correctStimvol incorrectStimvol blinkStimvol];%
+    newstimvol = [noBlink{1:3} correctStimvol incorrectStimvol blinkStimvol];% 
+    designAllRuns = zeros(sum(runLength), length(newstimvol));
+
     for iCond = 1:length(newstimvol)
         designAllRuns(newstimvol{iCond},iCond) = 1;
     end
@@ -167,10 +190,8 @@ end
 disppercent(inf);
 
 %% run GLM dnoise
-keyboard
-results = GLMdenoisedata(design, data, 1, 1.75, [], [], [], []); 
-% results = GLMdenoisedata(design, data, 1, 1.75, 'fir', [], [], []); 
-save(['glmoutput_' attCond '_' whichAnal '_' obs '.mat'], 'results','-v7.3')
+results = GLMdenoisedata(design, data, 1, 1.75,[], [], [], []);
+save(['glmoutput_' attCond '_' whichAnal '_CI_' obs '.mat'], 'results','-v7.3')
 
 % parse the output
 scanNum = viewGet(v, 'curscan');
