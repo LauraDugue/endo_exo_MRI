@@ -94,6 +94,46 @@ elseif strcmp(whichAnal,'TPJ')
             save Anal/endostimvolTPJ.mat stimvol stimNames var
         end
     end
+elseif strcmp(whichAnal,'first')
+    if strcmp(attCond,'exo')
+        load(['Anal/correctIncorrect_' obs '_exo']);
+        if exist('Anal/exostimvol.mat', 'file')
+            load('Anal/exostimvol.mat');
+        else
+            [stimvol, stimNames, var] = getStimvol(v, ...
+                {{'CueCond=[1 2 3 4]','PrePost=1','targLoc=1'},...
+                {'CueCond=[5 6 7 8]','PrePost=1','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[1 2 3 4]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=[5 6 7 8]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=9','cueLoc=1'}, ...
+                {'CueCond=9','cueLoc=2'}, ...
+                {'CueCond=10'}});
+            save Anal/exostimvol.mat stimvol stimNames var
+        end
+    elseif strcmp(attCond,'endo')
+        load(['Anal/correctIncorrect_' obs '_endo']);
+        if exist('Anal/endostimvol.mat', 'file')
+            load('Anal/endostimvol.mat');
+        else
+            [stimvol, stimNames, var] = getStimvol(v, ...
+                {{'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=1'},...
+                {'CueCond=[7 8]','PrePost=1','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[7 8]','PrePost=2','targLoc=1'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[7 8]','PrePost=1','targLoc=2'}, ...
+                {'CueCond=[1 2 3 4 5 6]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=[7 8]','PrePost=2','targLoc=2'}, ...
+                {'CueCond=9','cueLoc=1'}, ...
+                {'CueCond=9','cueLoc=2'}, ...
+                {'CueCond=10'}});
+            save Anal/endostimvol.mat stimvol stimNames var
+        end
+    end
 end
 
 runLength = [];
@@ -115,7 +155,7 @@ if strcmp(whichAnal,'visualCortex')
         % the noBlink stimvols are what we will use in the design matrix
         noBlink{iCond} = stimvol{iCond}(CIValidInvalid{iCond}~=0);
     end
-
+    
     % fill in the trials for which we do not care about blinks
     for iCond=5:7
         noBlink{iCond}=stimvol{iCond};
@@ -124,9 +164,9 @@ if strcmp(whichAnal,'visualCortex')
     blinkStimvol = sort([Blink{1}';Blink{2}';Blink{3}';Blink{4}'])';
     
     % correct/incorrect stimvols
-    newstimvol = [noBlink blinkStimvol];% 
+    newstimvol = [noBlink blinkStimvol];%
     designAllRuns = zeros(sum(runLength), length(newstimvol));
-
+    
     for iCond = 1:length(newstimvol)
         designAllRuns(newstimvol{iCond},iCond) = 1;
     end
@@ -141,12 +181,12 @@ if strcmp(whichAnal,'TPJ')
         % the noBlink stimvols are what we will use in the design matrix
         noBlink{iCond} = stimvol{iCond}(CIValidInvalid{iCond+4}~=0);
     end
-
+    
     % fill in the trials for which we do not care about blinks
     for iCond=1:3
         noBlink{iCond}=stimvol{iCond};
     end
-
+    
     correctStimvol{1,2} = [];
     incorrectStimvol{1,2} = [];
     for iCond = 8:9
@@ -159,14 +199,40 @@ if strcmp(whichAnal,'TPJ')
     blinkStimvol = sort([Blink{4}';Blink{5}'])';
     
     % correct/incorrect stimvols
-    newstimvol = [noBlink{1:3} correctStimvol incorrectStimvol blinkStimvol];% 
+    newstimvol = [noBlink{1:3} correctStimvol incorrectStimvol blinkStimvol];%
     designAllRuns = zeros(sum(runLength), length(newstimvol));
-
+    
     for iCond = 1:length(newstimvol)
         designAllRuns(newstimvol{iCond},iCond) = 1;
     end
 end
-
+if strcmp(whichAnal,'first')
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % get stimvols for correct and incorrect trials
+    Blink{1,length(stimvol)} = [];
+    noBlink{1,length(stimvol)} = [];
+    
+    for iCond = 1:8
+        Blink{iCond} = stimvol{iCond}(correctIncorrect{iCond}==0);
+        % the noBlink stimvols are what we will use in the design matrix
+        noBlink{iCond} = stimvol{iCond}(correctIncorrect{iCond}~=0);
+    end
+    
+    % fill in the trials for which we do not care about blinks
+    for iCond=9:11
+        noBlink{iCond}=stimvol{iCond};
+    end
+    
+    blinkStimvol = sort([Blink{1}';Blink{2}';Blink{3}';Blink{4}';Blink{5}';Blink{6}';Blink{7}';Blink{8}'])';
+    
+    % correct/incorrect stimvols
+    newstimvol = [noBlink blinkStimvol];%
+    designAllRuns = zeros(sum(runLength), length(newstimvol));
+    
+    for iCond = 1:length(newstimvol)
+        designAllRuns(newstimvol{iCond},iCond) = 1;
+    end
+end
 % now split by run
 runStartTimes = 1;
 runEndTimes = [];
