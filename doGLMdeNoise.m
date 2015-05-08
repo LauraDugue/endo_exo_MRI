@@ -248,12 +248,23 @@ end
 
 %% load the data
 whichSlice = [];
+whichScans = 1:nScans;
+
+rois = loadROITSeries(v, 'r_vTPJ', whichScans);
+for i=1:nScans; nVox(i) = rois{i}.n; end
+whichScans = whichScans(nVox==max(nVox));
+
 disppercent(-inf, 'Loading data');
-for iScan = 1:nScans
-    data{iScan} = loadTSeries(v, iScan, whichSlice, [], [], [], 'single');
+idxScan = 0;
+for iScan = whichScans
+    idxScan = idxScan +1;
+    data{idxScan} = loadTSeries(v, iScan, whichSlice, [], [], [], 'single');
     disppercent(iScan/nScans);
+    d{idxScan} = design{iScan};
 end
 disppercent(inf);
+
+design = d;
 
 %% run GLM dnoise
 results = GLMdenoisedata(design, data, 1, 1.75,[], [], [], []);

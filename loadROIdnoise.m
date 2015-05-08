@@ -45,7 +45,7 @@ end
 roiname = cellArray(roiname);
 
 % load the analysis
-view = loadAnalysis(view, ['glmdnoise/dnoiseAnal_' whichAnal '.mat']);
+view = loadAnalysis(view, ['glmdnoise/dnoiseAnal_newvTPJ_' whichAnal '.mat']);
 
 % extract the params
 d = viewGet(view, 'd');
