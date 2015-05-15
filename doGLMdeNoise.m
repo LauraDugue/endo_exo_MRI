@@ -172,6 +172,7 @@ if strcmp(whichAnal,'visualCortex')
     end
 end
 if strcmp(whichAnal,'TPJ')
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % get stimvols for correct and incorrect trials
     Blink{1,length(stimvol)} = [];
@@ -250,9 +251,9 @@ end
 whichSlice = [];
 whichScans = 1:nScans;
 
-rois = loadROITSeries(v, 'r_vTPJ', whichScans);
-for i=1:nScans; nVox(i) = rois{i}.n; end
-whichScans = whichScans(nVox==max(nVox));
+% rois = loadROITSeries(v, 'r_vTPJ', whichScans);
+% for i=1:nScans; nVox(i) = rois{i}.n; end
+% whichScans = whichScans(nVox==max(nVox));
 
 disppercent(-inf, 'Loading data');
 idxScan = 0;

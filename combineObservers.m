@@ -5,13 +5,13 @@
 %       date: 02/20/15
 
 %% set conditions to run
-obs = {'nms' 'mr' 'id'};
+obs = {'nms' 'mr' 'id' 'rd'};
 whichAnal = 'TPJ'; % 'first' or 'visualCortex' or 'TPJ'
 % roiName = {'r_v1','r_v2d','r_v3d','r_v3a','r_v3b','r_v4','r_vo1', 'r_vo2','r_v7',...
 %     'l_v1','l_v2d', 'l_v3d','l_v3a','l_v3b','l_v4','l_vo1', 'l_vo2','l_v7','r_vTPJ'};
-roiName = {'r_pTPJ'};
+roiName = {'r_vTPJ'};
 % roitoPlot = {'v1','v2d','v3d','v3a','v3b','v4','vo1', 'vo2','v7','vTPJ'};
-roitoPlot = {'pTPJ'};
+roitoPlot = {'vTPJ'};
 % roiName = {'r_vo1','l_vo1'};
 % roitoPlot = {'vo1'};
 numRoi = 9; % without counting rTPJ
