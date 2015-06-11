@@ -5,8 +5,8 @@
 %       date: 01/17/15
 
 %% set conditions to run
-obs = 'co';
-cond = 'exo'; % 'exo' or 'endo'
+obs = 'rd';
+cond = 'endo'; % 'exo' or 'endo'
 createGroup = 1; % 0 to not create and 1 to create
 whichAnal = 'TPJ'; % 'first' or 'visualCortex' or 'TPJ'
 doGLM = 0; % 0 to not run and 1 to run
