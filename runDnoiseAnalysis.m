@@ -7,9 +7,9 @@
 %% set conditions to run
 obs = 'rd';
 cond = 'endo'; % 'exo' or 'endo'
-createGroup = 1; % 0 to not create and 1 to create
+createGroup = 0; % 0 to not create and 1 to create
 whichAnal = 'TPJ'; % 'first' or 'visualCortex' or 'TPJ'
-doGLM = 0; % 0 to not run and 1 to run
+doGLM = 1; % 0 to not run and 1 to run
 roiName = {'r_vTPJ', 'r_Ins'};%, 'r_pTPJ'
     %{'r_v1', 'r_v3a','r_v4','r_v7','r_vTPJ'};
     %{'l_v1', 'l_v4', 'l_vo1', 'l_vo2', 'l_v2d', 'l_v3d', 'l_v3a', 'l_v3b', 'l_lo1', 'l_lo2','l_v7','l_ips1','l_ips2','l_ips3','l_ips4',...

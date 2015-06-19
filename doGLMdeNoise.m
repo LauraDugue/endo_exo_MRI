@@ -251,9 +251,11 @@ end
 whichSlice = [];
 whichScans = 1:nScans;
 
-% rois = loadROITSeries(v, 'r_vTPJ', whichScans);
-% for i=1:nScans; nVox(i) = rois{i}.n; end
-% whichScans = whichScans(nVox==max(nVox));
+rois = loadROITSeries(v, 'r_vTPJ', whichScans);
+for i=1:nScans; nVox(i) = rois{i}.n; end
+
+whichScans = whichScans(nVox>=(max(nVox)/4*3));
+disp(whichScans)
 
 disppercent(-inf, 'Loading data');
 idxScan = 0;
@@ -268,8 +270,9 @@ disppercent(inf);
 design = d;
 
 %% run GLM dnoise
-results = GLMdenoisedata(design, data, 1, 1.75,[], [], [], []);
-save(['glmoutput_' attCond '_' whichAnal '_CI_' obs '.mat'], 'results','-v7.3')
+[results,denoiseddata] = GLMdenoisedata(design, data, 1, 1.75,[], [], [], []);
+save(['glmoutput_' attCond '_' whichAnal '_CI_' obs '_results.mat'], 'results','-v7.3')
+save(['glmoutput_' attCond '_' whichAnal '_CI_' obs '_denoiseddata.mat'], 'denoiseddata','-v7.3')
 
 % parse the output
 scanNum = viewGet(v, 'curscan');

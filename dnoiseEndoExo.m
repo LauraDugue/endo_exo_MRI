@@ -17,7 +17,7 @@ end
 getArgs(varargin, [], 'verbose=0');
 if ieNotDefined('scanNum'); scanNum = 1;end
 if ieNotDefined('groupNum'); groupNum = 'w-endo';end
-if ieNotDefined('locThresh'); locThresh = 0.3; end
+if ieNotDefined('locThresh'); locThresh = 0.2; end
 if ieNotDefined('locGroup'); locGroup = 'Averages'; end
 if ieNotDefined('locScan'); locScan = 1; end
 
