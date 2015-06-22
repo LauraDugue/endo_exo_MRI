@@ -26,12 +26,12 @@ rois = loadROIdnoise(v, whichAnal, roiName, scanNum, groupNum);
 
 % load the localizer corAnal Roi-by-Roi
 localizer = loadROIcoranalMatching(v, roiName, locScan, locGroup, scanNum, groupNum);
-for iRoi = 1:length(rois)
-    goodVox{iRoi} = localizer{iRoi}.co > locThresh & localizer{iRoi}.ph < pi & ~isnan(mean(rois{iRoi}.ehdr,2));
+for iRoi = 1:length(localizer)
+    goodVox{iRoi} = localizer{iRoi}.co > locThresh & localizer{iRoi}.ph < pi & ~isnan(mean(rois{iRoi}.ehdr(localizer{iRoi}.goodSelectedVoxel),2));
 end
 
 % average across voxels in each ROI
-for iRoi = 1:length(rois)
+for iRoi = 1:length(localizer)
     ehdr{iRoi} = mean(rois{iRoi}.ehdr(goodVox{iRoi},:));
     ehdrste{iRoi} = mean(rois{iRoi}.ehdrste(goodVox{iRoi},:));
 end

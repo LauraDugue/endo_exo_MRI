@@ -9,9 +9,9 @@ obs = {'nms' 'mr' 'id' 'rd' 'co'}; %
 whichAnal = 'first'; % 'first' or 'visualCortex' or 'TPJ'
 % roiName = {'r_v1','r_v2d','r_v3d','r_v3a','r_v3b','r_v4','r_vo1', 'r_vo2','r_v7',...
 %     'l_v1','l_v2d', 'l_v3d','l_v3a','l_v3b','l_v4','l_vo1', 'l_vo2','l_v7','r_vTPJ'};
-roiName = {'r_Ins'};
+roiName = {'r_v1'};
 % roitoPlot = {'v1','v2d','v3d','v3a','v3b','v4','vo1', 'vo2','v7','vTPJ'};
-roitoPlot = {'Ins'};
+roitoPlot = {'v'};
 % roiName = {'r_vo1','l_vo1'};
 % roitoPlot = {'vo1'};
 numRoi = 9; % without counting rTPJ
@@ -90,10 +90,10 @@ steExo{size(roiName,2)} = [];
 countROI = 0;
 for iROI = roiName
     countROI = countROI + 1;
-    avgEndo{countROI} = nanmean(endo{countROI});
-    avgExo{countROI} = nanmean(exo{countROI});
-    steEndo{countROI} = nanstd(endo{countROI})./size(obs,2);
-    steExo{countROI} = nanstd(exo{countROI})./size(obs,2);
+    avgEndo{countROI} = mean(endo{countROI});
+    avgExo{countROI} = mean(exo{countROI});
+    steEndo{countROI} = std(endo{countROI})./size(obs,2);
+    steExo{countROI} = std(exo{countROI})./size(obs,2);
 end
 
 %% Plot the data for Valid and Invalid correct trials, roi-by-roi
