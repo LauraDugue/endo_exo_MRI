@@ -6,12 +6,12 @@
 
 %% set conditions to run
 obs = {'nms' 'mr' 'id' 'rd' 'co'}; % 
-whichAnal = 'first'; % 'first' or 'visualCortex' or 'TPJ'
+whichAnal = 'TPJ'; % 'first' or 'visualCortex' or 'TPJ'
 % roiName = {'r_v1','r_v2d','r_v3d','r_v3a','r_v3b','r_v4','r_vo1', 'r_vo2','r_v7',...
 %     'l_v1','l_v2d', 'l_v3d','l_v3a','l_v3b','l_v4','l_vo1', 'l_vo2','l_v7','r_vTPJ'};
-roiName = {'r_Ins'};
+roiName = {'r_pTPJ'};
 % roitoPlot = {'v1','v2d','v3d','v3a','v3b','v4','vo1', 'vo2','v7','vTPJ'};
-roitoPlot = {'Ins'};
+roitoPlot = {'pTPJ'};
 % roiName = {'r_vo1','l_vo1'};
 % roitoPlot = {'vo1'};
 numRoi = 9; % without counting rTPJ
@@ -148,7 +148,33 @@ if strcmp(whichAnal,'TPJ')
         set(gca,'xTickLabel',{'Valid-Exo' 'Invalid-Exo' 'Valid-Endo' 'Invalid-Endo'},'FontSize',14);
         ylabel('fMRI resp (% chg img intensity)');
         
-        print('-djpeg','-r500',['/Local/Users/purpadmin/Desktop/Laura/validInvalid_r' roitoPlot{1}]);
+        print('-djpeg','-r500',['/Local/Users/purpadmin/Desktop/Laura/validInvalid_r' roitoPlot{1} '_correct']);
+        
+        toplot = [avgExo{end}(6:7) avgEndo{end}(6:7)];
+        stetoplot = [steExo{end}(6:7) steEndo{end}(6:7)];
+        
+        % set boudaries
+        yMax = ceil(10*(max(toplot+max(stetoplot))))/10;
+        yMin = min(0, floor(10*(min(toplot)-max(stetoplot)))/10);
+        
+        % create a new figure
+        smartfig('Valid-Invalid'); clf;
+        % title  for the figure based on the ROI
+        % suptitle('Valid vs. Invalid - correct trials');
+        suptitle(sprintf('Valid vs. Invalid - incorrect trials (%s)', roitoPlot{end}));
+        
+        cla
+        bar(toplot, 'facecolor', 'k');
+        hold on
+        errorbar(toplot, stetoplot, 'ko');
+        
+        yaxis([yMin yMax]);
+        axis square;box off;
+        set(gca,'xTickLabel',{'Valid-Exo' 'Invalid-Exo' 'Valid-Endo' 'Invalid-Endo'},'FontSize',14);
+        ylabel('fMRI resp (% chg img intensity)');
+        
+        print('-djpeg','-r500',['/Local/Users/purpadmin/Desktop/Laura/validInvalid_r' roitoPlot{1} '_incorrect']);
+        
     end
 end
 
@@ -316,7 +342,7 @@ if strcmp(whichAnal,'first')
         smartfig('Valid-Invalid'); clf;
         % title  for the figure based on the ROI
         % suptitle('Valid vs. Invalid - correct trials');
-        suptitle('Both Hemifield - (right vTPJ)');
+        suptitle(['right ' roitoPlot{:}]);
         
         subplot(1,2,1)
         cla
@@ -325,7 +351,7 @@ if strcmp(whichAnal,'first')
         errorbar(toplotExo, stetoplotExo, 'ko');
         
         yaxis([yMin yMax]);
-        xaxis([0 5])
+        xaxis([0 5]);
         axis square;box off;
         set(gca,'xTickLabel',{'Pre_V' 'Pre_I' 'Post_V' 'Post_I'},'FontSize',14);
         ylabel('fMRI resp (% chg img intensity)');
@@ -338,11 +364,14 @@ if strcmp(whichAnal,'first')
         errorbar(toplotEndo, stetoplotEndo, 'ko');
         
         yaxis([yMin yMax]);
-        xaxis([0 5])
+        xaxis([0 5]);
         axis square;box off;
         set(gca,'xTickLabel',{'Pre_V' 'Pre_I' 'Post_V' 'Post_I'},'FontSize',14);
         ylabel('fMRI resp (% chg img intensity)');
         title('Endogenous attention','FontSize',14)
+        
+        print('-djpeg','-r500',['/Local/Users/purpadmin/Desktop/Laura/prePost_r' roitoPlot{:}]);
+        
         
 %         %%% LEFT HEMI
 %         toplotExo = avgExo{end}(1:4); 
@@ -430,6 +459,5 @@ if strcmp(whichAnal,'first')
 %         ylabel('fMRI resp (% chg img intensity)');
 %         title('Endogenous attention','FontSize',14)
 %         
-        print('-djpeg','-r500','/Local/Users/purpadmin/Desktop/Laura/rightHemi_validInvalid_rvTPJ');
     end
 end

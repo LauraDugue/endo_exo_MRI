@@ -281,7 +281,7 @@ groupNum = viewGet(v, 'curgroup');
 d.ehdr = results.modelmd{2};
 d.ehdrste = results.modelse{2};
 d.stimvol = design;
-[v,dnoiseAnal] = mrDispOverlay(results.R2, scanNum, groupNum, v, ['saveName=dnoiseAnal_' whichAnal], 'overlayNames', {'r2'}, 'analName', 'glmdnoise', 'd', d);
+[v,dnoiseAnal] = mrDispOverlay(results.R2, scanNum, groupNum, v, ['saveName=dnoiseAnal_' whichAnal], 'overlayNames', {'r2'}, 'analName', 'glmdnoiseboot', 'd', d);
 
 % mrSetPref('overwritePolicy', 'Merge');
 % saveAnalysis(v, ['dnoiseAnal_' whichAnal]);

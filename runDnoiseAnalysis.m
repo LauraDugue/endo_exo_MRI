@@ -1,7 +1,7 @@
 % runDnoiseAnalysis.m
 %
 %      usage: runDnoiseAnalysis
-%         by: eli & laura
+%         by: laura
 %       date: 01/17/15
 
 %% set conditions to run
