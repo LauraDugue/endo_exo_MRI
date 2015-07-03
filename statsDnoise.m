@@ -5,14 +5,18 @@
 %       date: 06/23/15
 
 %% set conditions to run
-obs = {'rd'}; %'nms' 'mr' 'id' 'rd'
-whichAnal = 'TPJ'; % 'first' or 'TPJ'
+obs = {'co'}; %'nms' 'mr' 'id' 'rd' 'co'
+whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%'r_vTPJ' or 'r_pTPJ' or 'r_Ins'
 attCond = 'endo';
-saveOverlay = 1;
+saveOverlay = 0;
 
 %% Set directory
-dir = ['/Volumes/DRIVE1/DATA/laura/MRI/' obs{:} '/' obs{:} 'Merge'];
+if strcmp(obs{:},'co') || strcmp(obs{:},'rd')
+    dir = ['/Volumes/DRIVE1/DATA/laura/MRI/' obs{:} '/' obs{:} 'Merge'];
+else
+    dir = ['/Local/Users/purpadmin/Laura/MRI/Data/' obs{:} '/' obs{:} 'Merge'];
+end
 cd(dir)
 
 %% set parameters for mrTool
@@ -24,7 +28,11 @@ v = viewSet(v, 'curGroup', ['w-' attCond]);
 %% Save Bootstraped data as a mrTool overlay
 if saveOverlay
     % Load the output of the GLMdenoise
-    load(['glmoutput_' attCond '_' whichAnal '_CI_' obs{:} '_results.mat'])
+    if strcmp(obs{:},'co') || strcmp(obs{:},'rd')
+        load(['glmoutput_' attCond '_' whichAnal '_CI_' obs{:} '_results.mat'])
+    else
+        load(['glmoutput_' attCond '_' whichAnal '_CI_' obs{:} '.mat'])
+    end
     
     % Set parameters
     scanNum = viewGet(v, 'curscan');
@@ -70,10 +78,20 @@ end
 %% Statistics on the bootstrap values coming from the GLMdenoise procedure
 if strcmp(whichAnal,'TPJ')
     contrast = [0 0 0 -1 1 -1 1 0]';
-    for iRoi = 1:length(localizer)
-        my_contrast_distribution = boot{iRoi} * contrast;
-        statsBoot(iRoi) = mean(my_contrast_distribution > 0);
-    end
+    contrastCorrect = [0 0 0 -1 1 0 0 0]';
+    contrastIncorrect = [0 0 0 0 0 -1 1 0]';
+elseif strcmp(whichAnal,'first')
+    contrast = [-1 1 -1 1 -1 1 -1 1 0 0 0 0]'; % PRE AND POST
+    contrastPre = [-1 1 0 0 -1 1 0 0 0 0 0 0]'; % PRE
+    contrastPost = [0 0 -1 1 0 0 -1 1 0 0 0 0]'; % POST
 end
+
+for iRoi = 1:length(localizer)
+    my_contrast_distribution = boot{iRoi} * contrast;
+    statsBoot(iRoi) = mean(my_contrast_distribution > 0);
+end
+
 disp(statsBoot)
+
+
 

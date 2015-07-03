@@ -1,11 +1,11 @@
-% loadROIcoranal.m
+% loadROIdnoisestatsBOOT.m
 %
-%      usage: loadROIdnoise(view, <roiname>, <scanList>, <groupNum>, matchScanNum, matchGroupNum)
+%      usage: loadROIdnoisestatsBOOT(view, <roiname>, <scanList>, <groupNum>, matchScanNum, matchGroupNum)
 %         by: eli & laura
 %       date: 01/13/15
 %    purpose: 
 %
-function rois = loadROIdnoiseBOOT(view, whichAnal, roiname, scanList, groupNum, varagin);
+function rois = loadROIdnoisestatsBOOT(view, whichAnal, roiname, scanList, groupNum, varagin);
 
 rois = {};
 
@@ -45,7 +45,7 @@ end
 roiname = cellArray(roiname);
 
 % load the analysis
-view = loadAnalysis(view, ['glmdnoise/dnoiseAnal_' whichAnal '_boot.mat']);
+view = loadAnalysis(view, ['glmdnoise/dnoiseAnal_' whichAnal '_statsBoot.mat']);
 
 % extract the params
 d = viewGet(view, 'd');
@@ -108,11 +108,12 @@ for roinum = 1:length(roiname)
         % switch this if statement and load voxels indiviudally from file
         
         % load each voxel time series indiviudally
-        keyboard
         for voxnum = 1:rois{end}.n
           rois{end}.ehdr(voxnum,:) = squeeze(ehdr(x(voxnum),y(voxnum),s(voxnum),:))';
           rois{end}.ehdrste(voxnum,:) = squeeze(ehdrste(x(voxnum),y(voxnum),s(voxnum),:))';
-          rois{end}.boot(voxnum,:,:) = squeeze(boot(x(voxnum),y(voxnum),s(voxnum),:,:))';
+          for iRun = 1:size(boot,2)
+              rois{end}.boot{iRun}(voxnum,:) = squeeze(boot{iRun}(x(voxnum),y(voxnum),s(voxnum),:))';
+          end
         end
         disppercent(roinum/length(roiFieldnames));
       end
