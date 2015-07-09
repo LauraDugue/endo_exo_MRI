@@ -6,12 +6,11 @@
 
 %%% co: Sig for TPJ contrast and first contrast, for vTPJ only
 
-
 %% set conditions to run
 obs = {'rd'}; %'nms' 'mr' 'id' 'rd' 'co'
 whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%'r_pTPJ','r_Ins'
-attCond = 'endo';
+attCond = 'exo';
 saveOverlay = 1;
 
 %% Set directory
