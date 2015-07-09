@@ -4,15 +4,15 @@
 %         by: laura
 %       date: 07/09/15
 
-%%% This program run a GLM with a separate column for each trial to compute the response amplitudes separately for each trial. 
+%%% This program run a GLM with a separate column for each trial to compute the response amplitudes separately for each trial.
 %%% Then sort the trials according to response amplitudes.
 
 %% set conditions to run
-obs = {'rd'}; %'nms' 'mr' 'id' 'rd' 'co'
+obs = {'co'}; %'nms' 'mr' 'id' 'rd' 'co'
 whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%'r_pTPJ','r_Ins'
 attCond = 'exo';
-saveOverlay = 1;
+saveOverlay = 0;
 
 %% Set directory
 if strcmp(obs{:},'co') || strcmp(obs{:},'rd')
@@ -130,7 +130,7 @@ for iRoi = 1:length(localizer)
     idx{iRoi} = index;
 end
 
-%% Bin the trials according to response amplitudes: 33/33/33% 
+%% Bin the trials according to response amplitudes: 33/33/33%
 nBins = 3;
 trialsPerBin = round(size(sortedBetas{iRoi},1)/nBins);
 idxBin = {};
@@ -146,6 +146,37 @@ for iRoi = 1:length(localizer)
     end
 end
 
+%% Load behavioral data and Organize them per bin and per ROI
 
+load([dir '/Anal/AllData_' obs{:} '_' attCond '.mat'])
+%1st line: condition (from 1 to 11: VPreLoc1, VPostLoc1, VPreLoc2, VPostLoc2, IPreLoc1, IPostLoc1, IPreLoc2, IPostLoc2, CueOnlyLoc1, CueOnlyLoc2, Blank)
+%2nd line: performance (1=correct / -1=incorrect / 0=blink)
 
- 
+data = {};
+for iRoi = 1:length(localizer)
+    for iBin = 1:nBins
+        data{iRoi,iBin}(1,:) = allData(1,idxBin{iRoi,iBin});
+        data{iRoi,iBin}(2,:) = allData(2,idxBin{iRoi,iBin});
+    end
+end
+
+%% Compute the performance per bin and per ROI
+
+perfValid = [];
+perfInvalid = [];
+for iRoi = 1:length(localizer)
+    for iBin = 1:nBins
+        % All Valid trials
+        validCorrect = find(data{iRoi,iBin}(2,:)==1&(data{iRoi,iBin}(1,:)==1|data{iRoi,iBin}(1,:)==2|data{iRoi,iBin}(1,:)==3|data{iRoi,iBin}(1,:)==4));
+        totalValid = find((data{iRoi,iBin}(2,:)==1|data{iRoi,iBin}(2,:)==-1)&(data{iRoi,iBin}(1,:)==1|data{iRoi,iBin}(1,:)==2|data{iRoi,iBin}(1,:)==3|data{iRoi,iBin}(1,:)==4));
+        perfValid(iRoi,iBin) = size(validCorrect,2)./size(totalValid,2);
+        % All Invalid trials
+        invalidCorrect = find(data{iRoi,iBin}(2,:)==1&(data{iRoi,iBin}(1,:)==5|data{iRoi,iBin}(1,:)==6|data{iRoi,iBin}(1,:)==7|data{iRoi,iBin}(1,:)==8));
+        totalInvalid = find((data{iRoi,iBin}(2,:)==1|data{iRoi,iBin}(2,:)==-1)&(data{iRoi,iBin}(1,:)==5|data{iRoi,iBin}(1,:)==6|data{iRoi,iBin}(1,:)==7|data{iRoi,iBin}(1,:)==8));
+        perfInvalid(iRoi,iBin) = size(invalidCorrect,2)./size(totalInvalid,2);
+    end
+end
+
+disp(perfValid)
+disp(perfInvalid)
+
