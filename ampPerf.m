@@ -7,19 +7,18 @@
 %%% This program run a GLM with a separate column for each trial to compute the response amplitudes separately for each trial.
 %%% Then sort the trials according to response amplitudes.
 
+function ampPerf(obs,whichAnal,attCond,saveOverlay,nBins)
+
 %% set conditions to run
-obs = {'co'}; %'nms' 'mr' 'id' 'rd' 'co'
-whichAnal = 'first'; % 'first' or 'TPJ'
+% obs = {'co'}; %'nms' 'mr' 'id' 'rd' 'co'
+% whichAnal = 'first'; % 'first' or 'TPJ'
+% attCond = 'exo';
+% saveOverlay = 0;
+
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%'r_pTPJ','r_Ins'
-attCond = 'exo';
-saveOverlay = 0;
 
 %% Set directory
-if strcmp(obs{:},'co') || strcmp(obs{:},'rd')
-    dir = ['/Volumes/DRIVE1/DATA/laura/MRI/' obs{:} '/' obs{:} 'Merge'];
-else
-    dir = ['/Local/Users/purpadmin/Laura/MRI/Data/' obs{:} '/' obs{:} 'Merge'];
-end
+dir = ['/Volumes/DRIVE1/DATA/laura/MRI/' obs{:} '/' obs{:} 'Merge'];
 cd(dir)
 
 %% set parameters for mrTool
@@ -122,7 +121,7 @@ scm = thisDesign(1:size(scm,1),:);
 for iRoi = 1:length(localizer)
     betas{iRoi} = regress(tSeries{iRoi}', scm);
 end
-
+keyboard
 %% Sort the trials according to response amplitudes
 idx = {};
 for iRoi = 1:length(localizer)
@@ -131,7 +130,6 @@ for iRoi = 1:length(localizer)
 end
 
 %% Bin the trials according to response amplitudes: 33/33/33%
-nBins = 3;
 trialsPerBin = round(size(sortedBetas{iRoi},1)/nBins);
 idxBin = {};
 for iRoi = 1:length(localizer)
@@ -177,6 +175,6 @@ for iRoi = 1:length(localizer)
     end
 end
 
-disp(perfValid)
-disp(perfInvalid)
+save(['perf_' obs{:} '_' attCond '_' num2str(nBins) 'bins.mat'],'perfValid','perfInvalid')
 
+end

@@ -6,7 +6,7 @@
 
 %% set conditions to run
 obs = {'nms' 'mr' 'id' 'rd' 'co'}; %
-whichAnal = 'TPJ'; % 'first' or 'TPJ'
+whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ'};
 
 %% Load data over observers for each ROI - ENDO
@@ -270,11 +270,11 @@ if strcmp(whichAnal,'first')
     RMAOV2(matData)
     
     % t-tests used as post-hoc comparisons
-    TheRoiToAnalyze = 1;
-    [H,P,CI,STATS] = ttest(exoAll{TheRoiToAnalyze}(:,1),exoAll{TheRoiToAnalyze}(:,2),'tail','left') %PreV vs. PreI
-    [H,P,CI,STATS] = ttest(exoAll{TheRoiToAnalyze}(:,3),exoAll{TheRoiToAnalyze}(:,4),'tail','left') %PostV vs. PostI
-    [H,P,CI,STATS] = ttest(endoAll{TheRoiToAnalyze}(:,1),endoAll{TheRoiToAnalyze}(:,2),'tail','left') %PreV vs. PreI
-    [H,P,CI,STATS] = ttest(endoAll{TheRoiToAnalyze}(:,3),endoAll{TheRoiToAnalyze}(:,4),'tail','left') %PostV vs. PostI
+    TheRoiToAnalyze = 2;
+    [H,P,CI,STATS] = ttest(exoAll{TheRoiToAnalyze}(:,1),exoAll{TheRoiToAnalyze}(:,2)) %PreV vs. PreI
+    [H,P,CI,STATS] = ttest(exoAll{TheRoiToAnalyze}(:,3),exoAll{TheRoiToAnalyze}(:,4)) %PostV vs. PostI
+    [H,P,CI,STATS] = ttest(endoAll{TheRoiToAnalyze}(:,1),endoAll{TheRoiToAnalyze}(:,2)) %PreV vs. PreI
+    [H,P,CI,STATS] = ttest(endoAll{TheRoiToAnalyze}(:,3),endoAll{TheRoiToAnalyze}(:,4)) %PostV vs. PostI
     
     
     %%% BOTH HEMI

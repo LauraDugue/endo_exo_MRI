@@ -7,18 +7,14 @@
 %%% co: Sig for TPJ contrast and first contrast, for vTPJ only
 
 %% set conditions to run
-obs = {'rd'}; %'nms' 'mr' 'id' 'rd' 'co'
+obs = {'co'}; %'nms' 'mr' 'id' 'rd' 'co'
 whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%'r_pTPJ','r_Ins'
 attCond = 'exo';
-saveOverlay = 1;
+saveOverlay = 0;
 
 %% Set directory
-if strcmp(obs{:},'co') || strcmp(obs{:},'rd')
-    dir = ['/Volumes/DRIVE1/DATA/laura/MRI/' obs{:} '/' obs{:} 'Merge'];
-else
-    dir = ['/Local/Users/purpadmin/Laura/MRI/Data/' obs{:} '/' obs{:} 'Merge'];
-end
+dir = ['/Volumes/DRIVE1/DATA/laura/MRI/' obs{:} '/' obs{:} 'Merge'];
 cd(dir)
 
 %% set parameters for mrTool
@@ -30,11 +26,7 @@ v = viewSet(v, 'curGroup', ['w-' attCond]);
 %% load the data
 
 % Load the output of the GLMdenoise
-if strcmp(obs{:},'co') || strcmp(obs{:},'rd')
-    load(['glmoutput_' attCond '_' whichAnal '_CI_' obs{:} '_results.mat'])
-else
-    load(['glmoutput_' attCond '_' whichAnal '_CI_' obs{:} '_results.mat'])
-end
+load(['glmoutput_' attCond '_' whichAnal '_CI_' obs{:} '_results.mat'])
 
 %% make the unshuffled design matrix
 scm = [];
@@ -106,8 +98,8 @@ for iRoi = 1:length(localizer)
     betas{iRoi} = regress(tSeries{iRoi}', scm);
 end
 
-%% Compute bootstraps
-rep = 100000;
+%% Compute randomisation (shuffle the labels in the design matrix)
+rep = 1000;
 for iRep = 1:rep
     %% make the shuffled design matrix
     scm = [];
