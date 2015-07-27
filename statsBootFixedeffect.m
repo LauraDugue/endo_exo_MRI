@@ -146,7 +146,7 @@ for iObs = 1:length(obs)
 end
 
 % Compute randomisation (shuffle the labels in the design matrix)
-rep = 100000;
+rep = 1000;
 for iRep = 1:rep
     disp(['Running repetition number: ' num2str(iRep)])
     for iObs = 1:length(obs)

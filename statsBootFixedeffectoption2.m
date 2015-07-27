@@ -165,7 +165,7 @@ end
 rep = 100000;
 for iRep = 1:rep
     disp(['Running repetition number: ' num2str(iRep)])
-    parfor iObs = 1:length(obs)
+    for iObs = 1:length(obs)
         % pull data out of ROI and select voxels based on stimulus localizer
         for iRoi = 1:length(localizer{iObs})
             goodVox{iObs}{iRoi} = localizer{iObs}{iRoi}.co > locThresh & localizer{iObs}{iRoi}.ph < pi & ~isnan(rois{iObs}{iRoi}.ehdr(localizer{iObs}{iRoi}.goodSelectedVoxel)');
