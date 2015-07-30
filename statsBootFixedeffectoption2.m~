@@ -122,7 +122,7 @@ save(['/Volumes/DRIVE1/DATA/laura/MRI/Group/betas_' attCond '_indTrials.mat'],'b
 obs = {'nms' 'mr' 'id' 'rd' 'co'}; %
 whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
-attCond = 'endo';
+attCond = 'exo';
 
 % Load the output of the GLMdenoise once for each observer
 for iObs = 1:length(obs)
