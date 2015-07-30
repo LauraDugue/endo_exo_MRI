@@ -283,9 +283,10 @@ for iRoi = 1:length(roiName)
     ylim([.5 1])
     xlim([0 nBins*2+1])
     set(gca,'XTick',1:nBins*2,'FontSize',14)
-    set(gca,'XTickLabel',{'VPre1' 'VPre2' 'IPre1' 'IPre2'},'FontSize',14)
+    set(gca,'XTickLabel',{'VPre' 'IPre' 'VPost' 'IPost'},'FontSize',14)
     set(gca,'YTick',.5:.2:1,'FontSize',14)
     ylabel('Performance','FontSize',14)
+    xlabel('For Bin 2','FontSize',14)
     title(['Endo (' roiName{iRoi} ')'],'FontSize',16)
     
     % POST: Performance Endo
@@ -293,54 +294,41 @@ for iRoi = 1:length(roiName)
     hold on;
     for iSub = 1:size(obs,2)
         % perfValid(iRoi,iBin)
-        plot([dataEndo{iSub}.perfValidpost(iRoi,1) dataEndo{iSub}.perfValidpost(iRoi,2) dataEndo{iSub}.perfInvalidpost(iRoi,1) dataEndo{iSub}.perfInvalidpost(iRoi,2)],'o')
+        plot([dataEndo{iSub}.perfValidpre(iRoi,1) dataEndo{iSub}.perfValidpre(iRoi,2) dataEndo{iSub}.perfInvalidpre(iRoi,1) dataEndo{iSub}.perfInvalidpre(iRoi,2)],'o')
     end
-    errorbar(1:nBins*2,[mean(avg_endovalidpost{iRoi}(:,1)) mean(avg_endovalidpost{iRoi}(:,2)) mean(avg_endoinvalidpost{iRoi}(:,1)) mean(avg_endoinvalidpost{iRoi}(:,2))],...
-        [std(avg_endovalidpost{iRoi}(:,1))./sqrt(size(obs,2)) std(avg_endovalidpost{iRoi}(:,2))./sqrt(size(obs,2)) std(avg_endoinvalidpost{iRoi}(:,1))./sqrt(size(obs,2)) std(avg_endoinvalidpost{iRoi}(:,2))./sqrt(size(obs,2))],...
+    errorbar(1:nBins*2,[mean(avg_endovalidpre{iRoi}(:,1)) mean(avg_endovalidpre{iRoi}(:,2)) mean(avg_endoinvalidpre{iRoi}(:,1)) mean(avg_endoinvalidpre{iRoi}(:,2))],...
+        [std(avg_endovalidpre{iRoi}(:,1))./sqrt(size(obs,2)) std(avg_endovalidpre{iRoi}(:,2))./sqrt(size(obs,2)) std(avg_endoinvalidpre{iRoi}(:,1))./sqrt(size(obs,2)) std(avg_endoinvalidpre{iRoi}(:,2))./sqrt(size(obs,2))],...
         '-or','LineWidth',2,'MarkerSize',10,'MarkerFaceColor',[1 1 1])
-    ylim([.5 1])
+   ylim([.5 1])
     xlim([0 nBins*2+1])
     set(gca,'XTick',1:nBins*2,'FontSize',14)
-    set(gca,'XTickLabel',{'VPost1' 'VPost2' 'IPost1' 'IPost2'},'FontSize',14)
+    set(gca,'XTickLabel',{'VPre' 'IPre' 'VPost' 'IPost'},'FontSize',14)
     set(gca,'YTick',.5:.2:1,'FontSize',14)
+    ylabel('Performance','FontSize',14)
+    xlabel('For Bin 2','FontSize',14)
+    title(['Endo (' roiName{iRoi} ')'],'FontSize',16)
     
-    print('-djpeg','-r500',['/Local/Users/purpadmin/Desktop/Laura/Bin/endo_prepost_' num2str(nBins) 'bins_' roiName{iRoi}]);
     
-    % PRE: Performance Exo
+    % Performance Exo
     figure;
-    subplot(1,2,1)
-    hold on;
-    for iSub = 1:size(obs,2)
-        % perfValid(iRoi,iBin)
-        plot([dataExo{iSub}.perfValidpre(iRoi,1) dataExo{iSub}.perfValidpre(iRoi,2) dataExo{iSub}.perfInvalidpre(iRoi,1) dataExo{iSub}.perfInvalidpre(iRoi,2)],'o')
-    end
-    errorbar(1:nBins*2,[mean(avg_exovalidpre{iRoi}(:,1)) mean(avg_exovalidpre{iRoi}(:,2)) mean(avg_exoinvalidpre{iRoi}(:,1)) mean(avg_exoinvalidpre{iRoi}(:,2))],...
-        [std(avg_exovalidpre{iRoi}(:,1))./sqrt(size(obs,2)) std(avg_exovalidpre{iRoi}(:,2))./sqrt(size(obs,2)) std(avg_exoinvalidpre{iRoi}(:,1))./sqrt(size(obs,2)) std(avg_exoinvalidpre{iRoi}(:,2))./sqrt(size(obs,2))],...
-        '-or','LineWidth',2,'MarkerSize',10,'MarkerFaceColor',[1 1 1])
-    ylim([.5 1])
-    xlim([0 nBins*2+1])
-    set(gca,'XTick',1:nBins*2,'FontSize',14)
-    set(gca,'XTickLabel',{'VPre1' 'VPre2' 'IPre1' 'IPre2'},'FontSize',14)
-    set(gca,'YTick',.5:.2:1,'FontSize',14)
-    title(['Exo (' roiName{iRoi} ')'],'FontSize',16)
-    
-    % POST: Performance Exo
     subplot(1,2,2)
     hold on;
     for iSub = 1:size(obs,2)
         % perfValid(iRoi,iBin)
-        plot([dataExo{iSub}.perfValidpost(iRoi,1) dataExo{iSub}.perfValidpost(iRoi,2) dataExo{iSub}.perfInvalidpost(iRoi,1) dataExo{iSub}.perfInvalidpost(iRoi,2)],'o')
+        plot([dataExo{iSub}.perfValidpre(iRoi,2) dataExo{iSub}.perfInvalidpre(iRoi,2) dataExo{iSub}.perfValidpost(iRoi,2) dataExo{iSub}.perfInvalidpost(iRoi,2)],'o')
     end
-    errorbar(1:nBins*2,[mean(avg_exovalidpost{iRoi}(:,1)) mean(avg_exovalidpost{iRoi}(:,2)) mean(avg_exoinvalidpost{iRoi}(:,1)) mean(avg_exoinvalidpost{iRoi}(:,2))],...
-        [std(avg_exovalidpost{iRoi}(:,1))./sqrt(size(obs,2)) std(avg_exovalidpost{iRoi}(:,2))./sqrt(size(obs,2)) std(avg_exoinvalidpost{iRoi}(:,1))./sqrt(size(obs,2)) std(avg_exoinvalidpost{iRoi}(:,2))./sqrt(size(obs,2))],...
+    errorbar(1:nBins*2,[mean(avg_exovalidpre{iRoi}) mean(avg_exoinvalidpre{iRoi}) mean(avg_exovalidpost{iRoi}) mean(avg_exoinvalidpost{iRoi})],...
+        [std(avg_exovalidpre{iRoi})./sqrt(size(obs,2)) std(avg_exoinvalidpre{iRoi})./sqrt(size(obs,2)) std(avg_exovalidpost{iRoi})./sqrt(size(obs,2)) std(avg_exoinvalidpost{iRoi})./sqrt(size(obs,2))],...
         '-or','LineWidth',2,'MarkerSize',10,'MarkerFaceColor',[1 1 1])
     ylim([.5 1])
     xlim([0 nBins*2+1])
     set(gca,'XTick',1:nBins*2,'FontSize',14)
-    set(gca,'XTickLabel',{'VPost1' 'VPost2' 'IPost1' 'IPost2'},'FontSize',14)
+    set(gca,'XTickLabel',{'VPre' 'IPre' 'VPost' 'IPost'},'FontSize',14)
     set(gca,'YTick',.5:.2:1,'FontSize',14)
+    title('Exo','FontSize',16)
+    xlabel('For Bin 2','FontSize',14)
     
-    print('-djpeg','-r500',['/Local/Users/purpadmin/Desktop/Laura/Bin/exo_prepost_' num2str(nBins) 'bins_' roiName{iRoi}]);
+    print('-djpeg','-r500',['/Local/Users/purpadmin/Desktop/Laura/Bin/prepost_' num2str(nBins) 'bins_' roiName{iRoi}]);
     
 end
 

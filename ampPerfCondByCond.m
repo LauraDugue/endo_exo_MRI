@@ -15,7 +15,7 @@ function ampPerfCondByCond(obs,whichAnal,attCond,saveOverlay,nBins)
 % attCond = 'exo';
 % saveOverlay = 0;
 
-roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
+roiName = {'r_v1', 'r_v3a', 'r_v4', 'r_vTPJ','r_pTPJ','r_Ins'};%
 
 %% Set directory
 dir = ['/Volumes/DRIVE1/DATA/laura/MRI/' obs{:} '/' obs{:} 'Merge'];
