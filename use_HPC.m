@@ -15,6 +15,10 @@
 %% Create a folder
 % mkdir data 
 
+%% Zip and Unzip folder
+% zip -r coMerge.zip coMerge
+% unzip coMerge.zip
+
 %% Transfer the data
 % From Hypatia to the virtual computer: scp /Volumes/DRIVE1/DATA/laura/MRI/co/coMerge/glmoutput_endo_first_CI_co_denoiseddata.mat mercer:/scratch/ld1439/data/
 % From the virtual computer to Hypatia: scp s0*_dataset.mat purpadmin@hypatia.psych.nyu.edu:~/Desktop/

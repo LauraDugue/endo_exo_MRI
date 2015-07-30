@@ -160,7 +160,9 @@ for iObs = 1:length(obs)
     
     mrQuit()
 end
+save('/Volumes/DRIVE1/DATA/laura/MRI/Group/endo_data_hpc.mat','dataGLM','rois','localizer')
 
+%%
 % Compute randomisation (shuffle the labels in the design matrix)
 rep = 100000;
 for iRep = 1:rep
