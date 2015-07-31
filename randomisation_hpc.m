@@ -7,7 +7,7 @@ roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
 locThresh = 0.2;
 
 % Compute randomisation (shuffle the labels in the design matrix)
-rep = 1;
+rep = 10000;
 for iRep = 1:rep
     for iObs = 1:length(obs)
         % pull data out of ROI and select voxels based on stimulus localizer
