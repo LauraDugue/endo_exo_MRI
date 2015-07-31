@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=20:00:00
+#PBS -l mem=512GB
+#PBS -N randomisation_hpc
+#PBS -M ld1439@nyu.edu
+#PBS -j oe
+
+module load matlab/2014a
+
+cd /scratch/ld1439/endo_exo_MRI/
+
+matlab -nodisplay -r "addpath(genpath('/scratch/ld1439/data/')); randomisation_hpc('endo'); exit()"
+
+exit
+
+

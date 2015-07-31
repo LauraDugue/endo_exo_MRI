@@ -164,7 +164,7 @@ save('/Volumes/DRIVE1/DATA/laura/MRI/Group/endo_data_hpc.mat','dataGLM','rois','
 
 %%
 % Compute randomisation (shuffle the labels in the design matrix)
-rep = 100000;
+rep = 10;
 for iRep = 1:rep
     disp(['Running repetition number: ' num2str(iRep)])
     for iObs = 1:length(obs)
@@ -206,8 +206,16 @@ for iRep = 1:rep
                 countTrial = countTrial + 1;
             end
         end
-        thisDesign = convn(dataGLM{iObs}.models{1}(:,1), scm);
-        scm = thisDesign(1:size(scm,1),:);
+        
+        scm2 = [];
+        runStart = 1;
+        for iRun=1:length(dataGLM{iObs}.inputs.design)
+            runEnd = runStart + size(dataGLM{iObs}.inputs.design{iRun},1)-1;
+            thisDesign = convn(dataGLM{iObs}.models{1}(:,1), scm(runStart:runEnd,:));
+            thisDesign = thisDesign(1:length(dataGLM{iObs}.inputs.design{iRun}),:);
+            scm2 = cat(1, scm2, thisDesign);
+            runStart = runEnd + 1;
+        end            
         
         % shuffle the design matrix
         idx = size(scm,2);

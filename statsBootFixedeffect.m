@@ -96,7 +96,8 @@ for iObs = 1:length(obs)
         betas{iRoi,iObs} = regress(tSeries{iRoi}', scm);
     end
     
-    mrQuit
+    deleteView(v);
+    mrQuit;
 end
 save(['/Volumes/DRIVE1/DATA/laura/MRI/Group/betas_' attCond '.mat'],'betas')
 

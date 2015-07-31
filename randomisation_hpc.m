@@ -2,8 +2,12 @@ function randomisation_hpc(attCond)
 
 load([attCond '_data_hpc.mat'])
 
+obs = {'nms' 'mr' 'id' 'rd' 'co'}; %
+whichAnal = 'first'; % 'first' or 'TPJ'
+roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
+
 % Compute randomisation (shuffle the labels in the design matrix)
-rep = 10;
+rep = 1;
 for iRep = 1:rep
     for iObs = 1:length(obs)
         % pull data out of ROI and select voxels based on stimulus localizer
@@ -24,7 +28,7 @@ for iRep = 1:rep
         
         % make the shuffled design matrix: 1 column per trial
         idxAll = [];
-        parfor iRun = 1:length(dataGLM{iObs}.inputs.design)
+        for iRun = 1:length(dataGLM{iObs}.inputs.design)
             idx = [];
             for iVol = 1:length(dataGLM{iObs}.inputs.design{iRun})
                 if find(dataGLM{iObs}.inputs.design{iRun}(iVol,:)==1) > 0
@@ -44,8 +48,16 @@ for iRep = 1:rep
                 countTrial = countTrial + 1;
             end
         end
-        thisDesign = convn(dataGLM{iObs}.models{1}(:,1), scm);
-        scm = thisDesign(1:size(scm,1),:);
+        
+        scm2 = [];
+        runStart = 1;
+        for iRun=1:length(dataGLM{iObs}.inputs.design)
+            runEnd = runStart + size(dataGLM{iObs}.inputs.design{iRun},1)-1;
+            thisDesign = convn(dataGLM{iObs}.models{1}(:,1), scm(runStart:runEnd,:));
+            thisDesign = thisDesign(1:length(dataGLM{iObs}.inputs.design{iRun}),:);
+            scm2 = cat(1, scm2, thisDesign);
+            runStart = runEnd + 1;
+        end 
         
         % shuffle the design matrix
         idx = size(scm,2);
@@ -59,6 +71,6 @@ for iRep = 1:rep
     end
 end
 
-save(['/Volumes/DRIVE1/DATA/laura/MRI/Group/randombetas_' attCond '_indTrials.mat'],'betasShuffled')
+save(['/scratch/ld1439/data/randombetas_' attCond '_indTrials.mat'],'betasShuffled')
 
 end
