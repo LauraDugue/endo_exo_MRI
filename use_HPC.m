@@ -22,3 +22,10 @@
 %% Transfer the data
 % From Hypatia to the virtual computer: scp /Volumes/DRIVE1/DATA/laura/MRI/Group/endo_data_hpc.mat mercer:/scratch/ld1439/data/
 % From the virtual computer to Hypatia: scp s0*_dataset.mat purpadmin@hypatia.psych.nyu.edu:~/Desktop/
+
+%% Submit job
+
+% qsub run_hpc_endo.pbs
+% qstat -u ld1439
+
+% Look at Matlab: less randomisation_hpc.o5627004

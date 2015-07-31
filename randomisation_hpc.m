@@ -3,8 +3,8 @@ function randomisation_hpc(attCond)
 load([attCond '_data_hpc.mat'])
 
 obs = {'nms' 'mr' 'id' 'rd' 'co'}; %
-whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
+locThresh = 0.2;
 
 % Compute randomisation (shuffle the labels in the design matrix)
 rep = 1;
