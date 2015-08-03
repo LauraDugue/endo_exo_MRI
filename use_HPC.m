@@ -23,8 +23,9 @@
 % unzip coMerge.zip
 
 %% Transfer the data
+%%% TO RUN BOTH ON THE TERMINAL ON HYPATIA
 % From Hypatia to the virtual computer: scp /Volumes/DRIVE1/DATA/laura/MRI/Group/endo_data_hpc.mat mercer:/scratch/ld1439/data/
-% From the virtual computer to Hypatia: scp s0*_dataset.mat purpadmin@hypatia.psych.nyu.edu:~/Desktop/
+% From the virtual computer to Hypatia: scp mercer:/scratch/ld1439/data/randombetas_endo_indTrials.mat /Volumes/DRIVE1/DATA/laura/MRI/Group/betas_endo-from-mercer.mat
 
 %% Submit job
 

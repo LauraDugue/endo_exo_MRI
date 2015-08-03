@@ -1,4 +1,4 @@
-function randomisation_hpc(attCond)
+function randomisation_hpc(attCond,repNumber)
 
 load([attCond '_data_hpc.mat'])
 
@@ -8,7 +8,7 @@ locThresh = 0.2;
 
 
 % Compute randomisation (shuffle the labels in the design matrix)
-rep = 10;
+rep = 1000;
 for iRep = 1:rep
     for iObs = 1:length(obs)
         % pull data out of ROI and select voxels based on stimulus localizer
@@ -72,7 +72,7 @@ for iRep = 1:rep
     end
 end
 
-save(['/scratch/ld1439/data/randombetas_' attCond '_indTrials.mat'],'betasShuffled')
+save(['/scratch/ld1439/data/randombetas_' attCond '_indTrials_' num2str(repNumber) '.mat'],'betasShuffled')
 
 end
 
