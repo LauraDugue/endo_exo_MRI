@@ -16,7 +16,7 @@ for iRep = 1:rep
         end
         
         % average across voxels in each ROI
-        parfor iRoi = 1:length(localizer{iObs})
+        for iRoi = 1:length(localizer{iObs})
             tempB = [];
             for iRun = 1:size(rois{iObs}{iRoi}.boot,2)
                 temp = squeeze(mean(rois{iObs}{iRoi}.boot{iRun}(goodVox{iObs}{iRoi},:)));
