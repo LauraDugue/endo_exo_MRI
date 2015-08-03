@@ -186,11 +186,13 @@ temporalNormalization = 'No';
 
 % If detrend = 'Highpass' then highpassPeriod must be set to something.
 % Use nFrames/6 as the default.
-if strcmp(detrend,'Highpass')
-    if ieNotDefined('highpassPeriod')
-        highpassPeriod = round(nFrames/6);
-    end
-end
+% if strcmp(detrend,'Highpass')
+%     if ieNotDefined('highpassPeriod')
+%         highpassPeriod = round(nFrames/6);
+%     end
+% end
+highpassPeriod = round(nFrames/6);
+
 
 % If spatialNormalization = 'Aribrary' then spatialNorm must be set to
 % something. Use mean of tSeries as the default.
