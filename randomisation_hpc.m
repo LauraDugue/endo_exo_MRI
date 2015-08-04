@@ -66,7 +66,7 @@ for iRep = 1:rep
         scmShuffled = scm(:,idxShuffled);
         
         % Compute the surrogate contrasts
-        parfor iRoi = 1:length(roiName)
+        for iRoi = 1:length(roiName)
             betasShuffled{iRoi,iObs}(iRep,:) = regress(tSeries{iObs,iRoi}', scmShuffled);
         end
     end
