@@ -7,9 +7,9 @@ roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
 locThresh = 0.2;
 
 % Compute randomisation (shuffle the labels in the design matrix)
-rep = 10;
+rep = 4;
 for iRep = 1:rep
-    disp(['Running repetition number ' num2str(iRep)])
+    tic; disp(['Running repetition number ' num2str(iRep)])
     for iObs = 1:length(obs)
         % pull data out of ROI and select voxels based on stimulus localizer
         for iRoi = 1:length(localizer{iObs})
@@ -66,13 +66,14 @@ for iRep = 1:rep
         scmShuffled = scm(:,idxShuffled);
         
         % Compute the surrogate contrasts
-        for iRoi = 1:length(roiName)
+        parfor iRoi = 1:length(roiName)
             betasShuffled{iRoi,iObs}(iRep,:) = regress(tSeries{iObs,iRoi}', scmShuffled);
         end
     end
+    toc;
 end
 
-save(['/scratch/ld1439/data/randombetas_' attCond '_indTrials_' num2str(repNumber) '.mat'],'betasShuffled')
+% save(['/scratch/ld1439/data/randombetas_' attCond '_indTrials_' num2str(repNumber) '.mat'],'betasShuffled')
 
 end
 
