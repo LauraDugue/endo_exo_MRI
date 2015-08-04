@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -l nodes=1:ppn=1
-#PBS -l walltime=48:00:00
+#PBS -l walltime=35:00:00
 #PBS -l mem=500GB
 #PBS -N randomisation_hpc
 #PBS -M ld1439@nyu.edu
