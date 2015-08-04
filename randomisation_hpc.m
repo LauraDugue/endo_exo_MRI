@@ -7,7 +7,7 @@ roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
 locThresh = 0.2;
 
 % Compute randomisation (shuffle the labels in the design matrix)
-rep = 4;
+rep = 1000;
 for iRep = 1:rep
     tic; disp(['Running repetition number ' num2str(iRep)])
     for iObs = 1:length(obs)
@@ -73,7 +73,7 @@ for iRep = 1:rep
     toc;
 end
 
-% save(['/scratch/ld1439/data/randombetas_' attCond '_indTrials_' num2str(repNumber) '.mat'],'betasShuffled')
+save(['/scratch/ld1439/data/randombetas_' attCond '_indTrials_' num2str(repNumber) '.mat'],'betasShuffled')
 
 end
 
