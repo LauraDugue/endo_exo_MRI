@@ -99,7 +99,7 @@ for iRoi = 1:length(localizer)
 end
 
 %% Compute randomisation (shuffle the labels in the design matrix)
-rep = 1000;
+rep = 10000;
 for iRep = 1:rep
     %% make the shuffled design matrix
     scm = [];

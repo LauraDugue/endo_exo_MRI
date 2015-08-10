@@ -107,7 +107,7 @@ save(['/Volumes/DRIVE1/DATA/laura/MRI/Group/betas_' attCond '.mat'],'betas')
 obs = {'nms' 'mr' 'id' 'rd' 'co'}; %
 whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
-attCond = 'endo';
+attCond = 'exo';
 
 % Load the output of the GLMdenoise once for each observer
 for iObs = 1:length(obs)
@@ -147,9 +147,9 @@ for iObs = 1:length(obs)
 end
 
 % Compute randomisation (shuffle the labels in the design matrix)
-rep = 1000;
+rep = 10000;
 for iRep = 1:rep
-    disp(['Running repetition number: ' num2str(iRep)])
+    tic;disp(['Running repetition number: ' num2str(iRep)])
     for iObs = 1:length(obs)
         % make the shuffled design matrix
         scm = [];
@@ -191,6 +191,7 @@ for iRep = 1:rep
         betasShuf{iRoi} = mean(betasShuf{iRoi},2);
         randombetas{iRoi}(iRep,:) = betasShuf{iRoi}';
     end
+    toc;
 end
 
 save(['/Volumes/DRIVE1/DATA/laura/MRI/Group/randombetas_' attCond '.mat'],'randombetas')
@@ -200,8 +201,8 @@ save(['/Volumes/DRIVE1/DATA/laura/MRI/Group/randombetas_' attCond '.mat'],'rando
 obs = {'nms' 'mr' 'id' 'rd' 'co'}; %
 whichAnal = 'first'; % 'first' or 'TPJ'
 roiName = {'r_vTPJ','r_pTPJ','r_Ins'};%
-attCond = 'endo';
-rep = 100000;
+attCond = 'exo';
+rep = 10000;
 
 % Load the data
 cd /Volumes/DRIVE1/DATA/laura/MRI/Group
